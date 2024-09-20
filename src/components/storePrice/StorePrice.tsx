@@ -8,11 +8,20 @@ import GamepassIcon from "./GamepassIcon";
 
 interface StorePriceProps {
   store: Store;
+  shouldRedirect: boolean;
 }
 
-const StorePrice = ({ store }: StorePriceProps) => {
+const StorePrice = ({ store, shouldRedirect }: StorePriceProps) => {
+  const StoreComponent = shouldRedirect ? "a" : "div";
+
   return (
-    <StoreGame href={store.url} target="blank" $storeName={store.store}>
+    <StoreGame
+      href={shouldRedirect ? store.url : undefined}
+      target={shouldRedirect ? "_blank" : undefined}
+      as={StoreComponent}
+      $storeName={store.store}
+      $shouldHover={shouldRedirect}
+    >
       <StoreInfo>
         <StyledStoreIcon store={store.store} />
         {store.store === "Xbox" && store.gamepass && (
@@ -47,6 +56,7 @@ const StorePrice = ({ store }: StorePriceProps) => {
 
 interface StoreNameProps {
   $storeName: string;
+  $shouldHover?: boolean;
 }
 
 const StoreGame = styled.a<StoreNameProps>`
@@ -69,15 +79,15 @@ const StoreGame = styled.a<StoreNameProps>`
   }
   transition: background-color 300ms ease, transform 300ms ease;
 
-  &:hover {
-    background-color: ${({ $storeName }) =>
-      storeColors[$storeName as StoreTypes].hoverCardBackground};
+  ${({ $shouldHover, $storeName }) =>
+    $shouldHover &&
+    `
+   &:hover {
+    background-color: 
+      storeColors[${$storeName} as StoreTypes].hoverCardBackground;
     transform: translate(0, -1px);
   }
-
-  /* @media ${device.laptop} {
-    height: 25px;
-  } */
+  `}
 `;
 
 const StoreInfo = styled.div`
@@ -98,10 +108,6 @@ const NormalPrice = styled.p<StoreNameProps>`
   @media ${device.tablet} {
     font-size: 14px;
   }
-
-  /* @media ${device.laptop} {
-    font-size: 13px;
-  } */
 `;
 
 const DiscountPrice = styled.div`
@@ -169,10 +175,6 @@ const InitialPrice = styled.p<StoreNameProps>`
   @media ${device.tablet} {
     font-size: 11px;
   }
-
-  /* @media ${device.laptop} {
-    display: none;
-  } */
 `;
 
 export default StorePrice;

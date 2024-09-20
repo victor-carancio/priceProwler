@@ -12,6 +12,7 @@ declare module "styled-components" {
     buttonHover: string;
     logo: string;
     logoHover: string;
+    cardGame: string;
     cardGameGradient: string;
   }
 }

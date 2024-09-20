@@ -10,12 +10,13 @@ export const lightTheme: DefaultTheme = {
   textHover: "#050505",
   header: "#eeeeee",
   background: "#eeeeee",
-  card: "#eeeeee",
+  card: "#faf8ff",
   button: "#5f7f7e",
   buttonHover: "#43655a",
   logo: "#3e3c4b",
   logoHover: "#171623",
 
+  cardGame: "#eeeeee",
   cardGameGradient: "rgba(238, 238, 238,0.85) 1%,rgba(238, 238, 238,1) 100%",
 };
 
@@ -31,6 +32,7 @@ export const darkTheme: DefaultTheme = {
   logo: "#f2ecff",
   logoHover: "#b4aebf",
 
+  cardGame: "#2e2f33",
   cardGameGradient: "circle,rgba(66, 68, 73,0.95) 1%,rgba(66, 68, 73,1) 100%",
 };
 

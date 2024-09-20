@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { useGetGameFromNameDBQuery } from "../store/apis/gameApi";
 import styled from "styled-components";
-import { Game, StoreTypes } from "../types";
+import { Game, Store, StoreTypes } from "../types";
 import { device } from "../styles/media";
 import { useNavigate } from "react-router-dom";
 import StorePrice from "../components/storePrice/StorePrice";
@@ -27,7 +27,11 @@ const Results = () => {
       {data &&
         data?.data.map((game) => {
           return (
-            <CardGame key={game.id} $imageUrl={getImgGame(game, true)}>
+            <CardGame
+              key={game.id}
+              $imageUrl={getImgGame(game, true)}
+              onClick={() => handleNavigateToDetail(game.id)}
+            >
               <div>
                 <ImgGame
                   src={getImgGame(game, false)}
@@ -37,13 +41,15 @@ const Results = () => {
               </div>
 
               <InfoGame>
-                <TitleGame onClick={() => handleNavigateToDetail(game.id)}>
-                  {capitalizeEachWord(game.gameName)}
-                </TitleGame>
+                <TitleGame>{capitalizeEachWord(game.gameName)}</TitleGame>
                 <StoresContainer>
-                  {game.stores.map((store) => {
-                    return <StorePrice key={store.id} store={store} />;
-                  })}
+                  <StorePrice
+                    store={findCheapestGame(game.stores)[0]}
+                    shouldRedirect={false}
+                  />
+                  {/* <MoreInfo>
+                    <p>Ver más informacíon</p>
+                  </MoreInfo> */}
                 </StoresContainer>
 
                 {/* <MoreInfo>
@@ -87,20 +93,18 @@ const ResultContainer = styled.div`
 `;
 
 const CardGame = styled.div<CardGameProps>`
-  //todo cambiar cover por artwork en backend
-
   /* background-image: ${({ theme, $imageUrl }) =>
     `radial-gradient(${theme.cardGameGradient}), url(${$imageUrl}) `};
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover; */
 
-  /* background-color: ${({ theme }) => theme.card}; */
+  background-color: ${({ theme }) => theme.cardGame};
   border-radius: 5px;
   padding: 10px 10px;
   max-width: 400px;
   width: 100%;
-  height: 170px;
+
   height: 200px;
   display: flex;
 
@@ -109,22 +113,17 @@ const CardGame = styled.div<CardGameProps>`
 
   box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px,
     rgba(0, 0, 0, 0.05) 0px 5px 10px;
-  /* @media ${device.tablet} {
-    padding: 23px;
-    width: 90%;
-    max-width: 550px;
-    height: 250px;
-    flex-grow: 0;
-  } */
-  @media ${device.tablet} {
-    /* flex-grow: 1;
-    max-width: 450px;
-    height: 250px; */
 
+  @media ${device.tablet} {
     padding: 0px;
     flex-direction: column;
-    height: 415px;
+    height: 330px;
     max-width: 230px;
+  }
+  transition: filter 300ms ease, transform 300ms ease;
+  &:hover {
+    transform: translate(0, 1px);
+    filter: brightness(0.6);
   }
 `;
 
@@ -136,11 +135,6 @@ const ImgGame = styled.img`
   border-radius: 3px;
   cursor: pointer;
   opacity: 1;
-  transition: filter 300ms ease;
-
-  &:hover {
-    filter: brightness(0.6);
-  }
 
   @media ${device.tablet} {
     width: 230px;
@@ -157,13 +151,12 @@ const InfoGame = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  /* align-content: ; */
   justify-content: center;
-  /* align-items: center; */
+
   gap: 10px;
 
   @media ${device.tablet} {
-    padding: 0;
+    padding: 5px 0 0 0;
     justify-content: flex-start;
   }
 `;
@@ -177,24 +170,36 @@ const TitleGame = styled.h2`
   white-space: nowrap;
   @media ${device.tablet} {
     padding: 0 5px;
-    font-size: 14px;
+    font-size: 15px;
   }
   @media ${device.laptop} {
     font-size: 14px;
   }
-
-  transition: color 300ms ease, transform 300ms ease, text-decoration 300ms ease;
-  &:hover {
-    color: ${({ theme }) => theme.textHover};
-    text-decoration: underline;
-  }
 `;
+
+// const MoreInfo = styled.div`
+//   width: 100%;
+//   cursor: pointer;
+//   p {
+//     opacity: 0.9;
+//     text-align: center;
+//     font-weight: bold;
+//     font-size: 12px;
+//     transition: color 300ms ease, text-decoration 600ms ease;
+//   }
+//   &:hover {
+//     p {
+//       color: ${({ theme }) => theme.textHover};
+//       text-decoration: underline;
+//     }
+//   }
+// `;
 
 const StoresContainer = styled.div`
   display: flex;
   gap: 10px;
   flex-direction: column;
-  margin: auto 0;
+  /* margin: auto 0; */
 `;
 
 const getImgGame = (game: Game, backgrond: boolean) => {
@@ -221,6 +226,23 @@ const getImgGame = (game: Game, backgrond: boolean) => {
   };
   //569 x 320
   return `${imgStore}${storeImage[store as StoreTypes]}`;
+};
+
+const findCheapestGame = (stores: Store[]) => {
+  return [...stores].sort((a, b) => {
+    const finalPriceA = parseInt(a.info[0].final_price);
+    const finalPriceB = parseInt(b.info[0].final_price);
+
+    if (finalPriceA > finalPriceB) {
+      return 1;
+    }
+
+    if (finalPriceA < finalPriceB) {
+      return -1;
+    }
+
+    return 0;
+  });
 };
 
 export default Results;
