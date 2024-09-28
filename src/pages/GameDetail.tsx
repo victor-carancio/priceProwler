@@ -297,6 +297,7 @@ const AboutGame = styled.div`
   }
 `;
 
+//todo: jio
 const Overview = styled.div`
   display: flex;
   flex-direction: column;
