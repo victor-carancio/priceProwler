@@ -13,7 +13,7 @@ export interface Game {
   infoGame: InfoGameReduced[];
 }
 
-export interface GameDetail {
+export interface GameDetails {
   id: number;
   gameName: string;
   platform: string;
@@ -31,8 +31,8 @@ export interface InfoGameReduced {
   summary: string;
   version_title: string;
   cover: Cover;
-  genres: GenreElement[];
-  keywords: Keyword[];
+  genres: NameIdClass[];
+  keywords: NameIdClass[];
   platforms: PlatformElement[];
 }
 
@@ -48,10 +48,10 @@ export interface InfoGame {
   cover: Cover;
   alternative_names: AlternativeName[];
   artworks: Cover[];
-  game_engines: GameEngine[];
-  genres: GenreElement[];
+  game_engines: NameIdClass[];
+  genres: NameIdClass[];
   involved_companies: InvolvedCompany[];
-  keywords: Keyword[];
+  keywords: NameIdClass[];
   platforms: PlatformElement[];
   videos: Video[];
 }
@@ -70,18 +70,7 @@ export interface Cover {
   info_game_id: number;
 }
 
-export interface GameEngine {
-  game_engine_id: number;
-  info_game_id: number;
-}
-
-export interface GenreElement {
-  genre_id: number;
-  info_game_id: number;
-  genre: KeywordClass;
-}
-
-export interface KeywordClass {
+export interface NameIdClass {
   id: number;
   name: string;
 }
@@ -102,12 +91,7 @@ export interface Company {
   country: number | null;
   name: string;
   start_date: string;
-}
-
-export interface Keyword {
-  keyword_id: number;
-  info_game_id: number;
-  keyword: KeywordClass;
+  logo: Cover;
 }
 
 export interface PlatformElement {
@@ -171,4 +155,16 @@ export interface Info {
   offer_end_date: Date | null;
   currency: string;
   store_game_id: number;
+}
+
+export enum ImgSizes {
+  NONE = "none",
+  COVER_SMALL = "cover_small", // 35x35
+  LOGO_MED = "logo_med", // 284 x 160
+  COVER_BIG = "cover_big", // 264x374
+  COVER_BIG_2X = "cover_big_2x", //
+  SCREENSHOT_MED = "screenshot_med", // 669 x 320
+  SCREENSHOT_BIG = "screenshot_huge", // 1280x720 lfill
+  HD_720_p = "720p", // 1280x720 fit
+  HD_720_p_2X = "720p_2x", // 1280x720 fit
 }

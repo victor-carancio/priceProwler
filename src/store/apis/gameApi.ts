@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
-import { GameData, GameDetail } from "../../types";
+import { GameData, GameDetails } from "../../types";
 
 export const gameApiSlice = createApi({
   reducerPath: "gameApi",
@@ -12,7 +12,7 @@ export const gameApiSlice = createApi({
     getGameFromNameDB: builder.query<GameData, string>({
       query: (game) => `/game/search?title=${game}`,
     }),
-    getGameDetail: builder.query<GameDetail, string>({
+    getGameDetail: builder.query<GameDetails, string>({
       query: (id) => `/game/${id}`,
     }),
   }),

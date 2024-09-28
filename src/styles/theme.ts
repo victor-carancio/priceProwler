@@ -7,6 +7,7 @@ export const lightTheme: DefaultTheme = {
   // background: "#363537",
   body: "#faf8ff",
   text: "#383838",
+  textBody: "#383838",
   textHover: "#050505",
   header: "#eeeeee",
   background: "#eeeeee",
@@ -17,12 +18,16 @@ export const lightTheme: DefaultTheme = {
   logoHover: "#171623",
 
   cardGame: "#eeeeee",
+  cardGameOpaque: "rgba(238, 238, 238,0.5)",
   cardGameGradient: "rgba(238, 238, 238,0.85) 1%,rgba(238, 238, 238,1) 100%",
+  bodyBackgroundGradient:
+    "rgba(250, 248, 255,0.70) 0%, rgba(250, 248, 255,1) 70%",
 };
 
 export const darkTheme: DefaultTheme = {
   body: "#282828",
   text: "#f2ecff",
+  textBody: "#e8e5e0",
   textHover: "#b4aebf",
   header: "#1e1e1e",
   background: "#1e1e1e",
@@ -33,7 +38,9 @@ export const darkTheme: DefaultTheme = {
   logoHover: "#b4aebf",
 
   cardGame: "#2e2f33",
+  cardGameOpaque: "rgba(46, 47, 51,0.5)",
   cardGameGradient: "circle,rgba(66, 68, 73,0.95) 1%,rgba(66, 68, 73,1) 100%",
+  bodyBackgroundGradient: "rgba(40, 40, 40,0.9) 0%, rgba(40, 40, 40,1) 75%",
 };
 
 export const breakpoints = {

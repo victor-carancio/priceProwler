@@ -9,9 +9,10 @@ import GamepassIcon from "./GamepassIcon";
 interface StorePriceProps {
   store: Store;
   shouldRedirect: boolean;
+  detail?: boolean;
 }
 
-const StorePrice = ({ store, shouldRedirect }: StorePriceProps) => {
+const StorePrice = ({ store, shouldRedirect, detail }: StorePriceProps) => {
   const StoreComponent = shouldRedirect ? "a" : "div";
 
   return (
@@ -21,31 +22,36 @@ const StorePrice = ({ store, shouldRedirect }: StorePriceProps) => {
       as={StoreComponent}
       $storeName={store.store}
       $shouldHover={shouldRedirect}
+      $detail={detail}
     >
       <StoreInfo>
-        <StyledStoreIcon store={store.store} />
+        <StyledStoreIcon
+          store={store.store}
+          size={detail ? "40px" : undefined}
+        />
         {store.store === "Xbox" && store.gamepass && (
-          <GamepassIcon height="25px" fill="#f2ecff" />
+          <GamepassIcon height={detail ? "40px" : "25px"} fill="#f2ecff" />
         )}
       </StoreInfo>
       {store.info[0].discount_percent !== "0" &&
       store.info[0].discount_percent !== "-" ? (
         <DiscountPrice>
-          <Discount $storeName={store.store}>
+          <Discount $storeName={store.store} $detail={true}>
             <p>{`${store.info[0].discount_percent}%`}</p>
           </Discount>
           <Prices>
             <InitialPrice
               $storeName={store.store}
+              $detail={detail}
             >{`${store.info[0].initial_price} ${store.info[0].currency}`}</InitialPrice>
-            <NormalPrice $storeName={store.store}>
+            <NormalPrice $storeName={store.store} $detail={detail}>
               {`${store.info[0].final_price} ${store.info[0].currency}`}
             </NormalPrice>
           </Prices>
         </DiscountPrice>
       ) : (
         <Prices>
-          <NormalPrice $storeName={store.store}>
+          <NormalPrice $storeName={store.store} $detail={detail}>
             {`${store.info[0].initial_price} ${store.info[0].currency}`}
           </NormalPrice>
         </Prices>
@@ -57,15 +63,16 @@ const StorePrice = ({ store, shouldRedirect }: StorePriceProps) => {
 interface StoreNameProps {
   $storeName: string;
   $shouldHover?: boolean;
+  $detail?: boolean;
 }
 
-const StoreGame = styled.a<StoreNameProps>`
+export const StoreGame = styled.a<StoreNameProps>`
   cursor: pointer;
   border-radius: 5px;
   background-color: ${({ $storeName }) =>
     storeColors[$storeName as StoreTypes].cardBackground};
   width: 100%;
-  height: 30px;
+  height: ${({ $detail }) => ($detail ? "50px" : "30px")};
   padding-left: 10px;
   border-radius: 5px;
   display: flex;
@@ -75,9 +82,11 @@ const StoreGame = styled.a<StoreNameProps>`
   color: ${({ $storeName }) =>
     storeColors[$storeName as StoreTypes].cardFontColor};
   @media ${device.tablet} {
-    height: 35px;
+    height: ${({ $detail }) => ($detail ? "50px" : "35px")};
   }
   transition: background-color 300ms ease, transform 300ms ease;
+  filter: ${({ $detail }) =>
+    $detail ? "drop-shadow(0 0 8px rgba(0, 0, 0, 0.6))" : ""};
 
   ${({ $shouldHover, $storeName }) =>
     $shouldHover &&
@@ -97,16 +106,16 @@ const StoreInfo = styled.div`
 `;
 
 const NormalPrice = styled.p<StoreNameProps>`
-  font-size: 11px;
+  font-size: ${({ $detail }) => ($detail ? "14px" : "11px")};
   font-weight: bold;
   color: ${({ $storeName }) =>
     storeColors[$storeName as StoreTypes].normalpriceColor};
 
   @media ${device.mobile} {
-    font-size: 12px;
+    font-size: ${({ $detail }) => ($detail ? "15px" : "12px")};
   }
   @media ${device.tablet} {
-    font-size: 14px;
+    font-size: ${({ $detail }) => ($detail ? "15px" : "14px")};
   }
 `;
 
@@ -119,7 +128,7 @@ const DiscountPrice = styled.div`
 
 const Discount = styled.div<StoreNameProps>`
   height: 100%;
-  width: 35px;
+  width: ${({ $detail }) => ($detail ? "50px" : "35px")};
   padding: 0 5px;
   background-color: ${({ $storeName }) =>
     storeColors[$storeName as StoreTypes].offerBackground};
@@ -127,7 +136,7 @@ const Discount = styled.div<StoreNameProps>`
   align-items: center;
   justify-content: center;
   p {
-    font-size: 13px;
+    font-size: ${({ $detail }) => ($detail ? "18px" : "13px")};
     font-weight: bold;
     color: ${({ $storeName }) =>
       storeColors[$storeName as StoreTypes].offerFontColor};
@@ -136,7 +145,7 @@ const Discount = styled.div<StoreNameProps>`
   @media ${device.mobile} {
     width: 50px;
     p {
-      font-size: 18px;
+      font-size: ${({ $detail }) => ($detail ? "18px" : "13px")};
       font-weight: bold;
     }
   }
@@ -144,7 +153,7 @@ const Discount = styled.div<StoreNameProps>`
   @media ${device.tablet} {
     width: 40px;
     p {
-      font-size: 16px;
+      font-size: ${({ $detail }) => ($detail ? "18px" : "13px")};
       font-weight: bold;
     }
   }
@@ -162,18 +171,18 @@ const Prices = styled.div`
 `;
 
 const InitialPrice = styled.p<StoreNameProps>`
-  font-size: 10px;
+  font-size: ${({ $detail }) => ($detail ? "11px" : "10px")};
   font-weight: bold;
   text-decoration: line-through;
   color: ${({ $storeName }) =>
     storeColors[$storeName as StoreTypes].initialPriceColor};
 
   @media ${device.mobile} {
-    font-size: 11px;
+    font-size: ${({ $detail }) => ($detail ? "12px" : "11px")};
   }
 
   @media ${device.tablet} {
-    font-size: 11px;
+    font-size: ${({ $detail }) => ($detail ? "12px" : "11px")};
   }
 `;
 

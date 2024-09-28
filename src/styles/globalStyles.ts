@@ -25,6 +25,13 @@ textarea:focus, input:focus{
     text-decoration: none;
  }
 
+ hr{
+   height: 0px;
+    border: none;
+    border-top: ${({ theme }) => `0.5px solid ${theme.text}`};
+
+ }
+
  .logo{
    width: 30px;
    height: 30px;
@@ -53,17 +60,7 @@ textarea:focus, input:focus{
    }
  }
 
- .mobile{
-   @media ${device.laptop}{
-      background-color: red;
-   }
- }
 
- .desktop{
-   @media ${device.laptop}{
-      background-color: blue;
-   }
- }
 
 
 `;

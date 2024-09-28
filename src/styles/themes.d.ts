@@ -5,6 +5,7 @@ declare module "styled-components" {
     body: string;
     text: string;
     textHover: string;
+    textBody: string;
     header: string;
     background: string;
     card: string;
@@ -13,6 +14,8 @@ declare module "styled-components" {
     logo: string;
     logoHover: string;
     cardGame: string;
+    cardGameOpaque: string;
     cardGameGradient: string;
+    bodyBackgroundGradient: string;
   }
 }

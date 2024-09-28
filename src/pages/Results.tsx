@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { useGetGameFromNameDBQuery } from "../store/apis/gameApi";
 import styled from "styled-components";
-import { Game, Store, StoreTypes } from "../types";
+import { Game, ImgSizes, Store, StoreTypes } from "../types";
 import { device } from "../styles/media";
 import { useNavigate } from "react-router-dom";
 import StorePrice from "../components/storePrice/StorePrice";
@@ -29,12 +29,12 @@ const Results = () => {
           return (
             <CardGame
               key={game.id}
-              $imageUrl={getImgGame(game, true)}
+              $imageUrl={getImgGame(game, ImgSizes.NONE)}
               onClick={() => handleNavigateToDetail(game.id)}
             >
               <div>
                 <ImgGame
-                  src={getImgGame(game, false)}
+                  src={getImgGame(game, ImgSizes.HD_720_p)}
                   alt={`${game.gameName}-img`}
                   onClick={() => handleNavigateToDetail(game.id)}
                 />
@@ -98,7 +98,7 @@ const CardGame = styled.div<CardGameProps>`
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover; */
-
+  filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.2));
   background-color: ${({ theme }) => theme.cardGame};
   border-radius: 5px;
   padding: 10px 10px;
@@ -202,11 +202,12 @@ const StoresContainer = styled.div`
   /* margin: auto 0; */
 `;
 
-const getImgGame = (game: Game, backgrond: boolean) => {
+export const getImgGame = (game: Game, size: ImgSizes) => {
   if (game.infoGame.length > 0 && "cover" in game.infoGame[0]) {
-    return backgrond
-      ? `https://images.igdb.com/igdb/image/upload/t_screenshot_med/${game.infoGame[0].cover.image_id}.jpg`
-      : `https://images.igdb.com/igdb/image/upload/t_720p_2x/${game.infoGame[0].cover.image_id}.jpg`;
+    return `https://images.igdb.com/igdb/image/upload/t_${size}/${game.infoGame[0].cover.image_id}.jpg`;
+    // return background
+    //   ? `https://images.igdb.com/igdb/image/upload/t_screenshot_med/${game.infoGame[0].cover.image_id}.jpg`
+    //   : `https://images.igdb.com/igdb/image/upload/t_720p/${game.infoGame[0].cover.image_id}.jpg`;
   }
   const correctStore = game.stores.find((store) => store.game_id === game.id);
 
@@ -215,7 +216,7 @@ const getImgGame = (game: Game, backgrond: boolean) => {
   }
 
   const { store, imgStore } = correctStore;
-  if (backgrond) {
+  if (ImgSizes.NONE === size) {
     return imgStore;
   }
 
