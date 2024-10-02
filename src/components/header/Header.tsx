@@ -92,23 +92,16 @@ export const SearchOverlay = styled.div<SearchOverlayProps>`
 `;
 
 const Nav = styled.nav`
-  /* height: 30px; */
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-end;
   align-items: center;
   gap: 15px;
   @media ${device.laptop} {
-    /* width: 100%;
-    justify-content: space-around; */
     gap: 20px;
   }
 `;
 
-const ThemeSwitch = styled.div`
-  /* height: 30px; */
-`;
+const ThemeSwitch = styled.div``;
 
-const Auth = styled.div`
-  /* height: 30px; */
-`;
+const Auth = styled.div``;

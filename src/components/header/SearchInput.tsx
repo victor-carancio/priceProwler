@@ -75,26 +75,8 @@ const InputContainer = styled.form`
   }
 
   .input-logo {
-    /* background-color: red; */
     position: absolute;
     right: 10px;
     transform: scale(0.8);
   }
-
-  /* .search-input {
-    padding: 0 10px;
-    height: 70%;
-    width: 100%;
-    font-weight: bold;
-    font-size: 13px;
-    background-color: ${({ theme }) => theme.card};
-    border: none;
-    border-radius: 5px;
-    color: ${({ theme }) => theme.text};
-  }
-  .input-logo {
-    position: absolute;
-    right: 0;
-    margin-right: 5px;
-  } */
 `;

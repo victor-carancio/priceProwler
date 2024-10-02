@@ -3,6 +3,7 @@ import "react-image-gallery/styles/css/image-gallery.css";
 import styled from "styled-components";
 import { device } from "../../styles/media";
 
+//ejmplo
 // const images = [
 //   {
 //     original: "https://picsum.photos/id/1018/1000/600/",
@@ -29,7 +30,6 @@ import { device } from "../../styles/media";
 interface GameImagesGalleryProps {
   images: { original: string; thumbnail: string }[];
 }
-// { images }: GameImagesGalleryProps
 const GameImagesGallery = ({ images }: GameImagesGalleryProps) => {
   const renderItem = (item: ReactImageGalleryItem) => {
     if (item.original.includes("youtube.com")) {

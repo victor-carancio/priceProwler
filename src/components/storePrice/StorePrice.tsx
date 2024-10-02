@@ -68,7 +68,7 @@ interface StoreNameProps {
 
 export const StoreGame = styled.a<StoreNameProps>`
   cursor: pointer;
-  /* border-radius: 5px; */
+
   background-color: ${({ $storeName }) =>
     storeColors[$storeName as StoreTypes].cardBackground};
   width: 100%;
@@ -187,5 +187,3 @@ const InitialPrice = styled.p<StoreNameProps>`
 `;
 
 export default StorePrice;
-
-//todo: modificar xbox card si es que esta disponible en gamepass

@@ -30,7 +30,6 @@ const GameDetail = () => {
   return (
     <ContainerGame $imageUrl={getImgGame(data, ImgSizes.HD_720_p_2X)}>
       <h2>{data.gameName}</h2>
-      {/* <span>{unixTimeStampToDate(data.infoGame[0].first_release_date)}</span> */}
 
       <HeaderGame>
         <MainInfo>
@@ -153,7 +152,6 @@ interface ContainerGameProps {
 const ContainerGame = styled.div<ContainerGameProps>`
   margin: 0 auto;
   max-width: 1440px;
-  /* height: 100vh; */
   padding: 40px 10px;
   width: 100%;
   background-image: ${({ theme, $imageUrl }) =>
@@ -181,17 +179,14 @@ const HeaderGame = styled.div`
   width: 100%;
   display: flex;
   flex-flow: column;
-  /* background-color: yellow; */
   gap: 10px;
   background-color: ${({ theme }) => theme.cardGameOpaque};
 
-  /* box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px; */
   border-radius: 5px;
   @media ${device.tablet} {
     padding: 20px 10px;
     flex-flow: row;
-    /* align-content: flex-start; */
-    /* flex-flow: column; */
+
     justify-content: center;
     align-items: center;
     height: 500px;
@@ -294,27 +289,21 @@ const AboutGame = styled.div`
   }
 `;
 
-//todo: jio
 const Overview = styled.div`
   display: flex;
   flex-direction: column;
   gap: 14px;
   @media ${device.laptop} {
     width: 65%;
-    /* flex-flow: row nowrap;
-    align-content: space-between; */
   }
 `;
 
 const InfoOfGame = styled.div`
   width: 100%;
-  /* padding: 5px 0; */
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* align-items: center; */
   gap: 12px;
-  /* align-items: center; */
   @media ${device.laptop} {
     width: 30%;
   }

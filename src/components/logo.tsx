@@ -39,9 +39,6 @@ export const StyledIcon = styled(Provider)<IconBaseProps>`
 
 export const StyledStoreIcon = styled(Provider)<IconBaseProps>`
   font-size: ${({ size }) => `${size ? size : "24"}px `};
-  /* height: 35px; */
-  /* width: 35px; */
-
   cursor: pointer;
   color: ${({ theme }) => theme.logo};
   transition: color 300ms ease, transform 200ms ease;

@@ -17,7 +17,7 @@ textarea:focus, input:focus{
     color: ${({ theme }) => theme.text};
     font-family: 'Roboto', sans-serif;
     transition: background-color 0.3s, color 0.3s;
-    /* max-width: 1440px; */
+   
  }
 
  a{

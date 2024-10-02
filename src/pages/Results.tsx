@@ -47,18 +47,7 @@ const Results = () => {
                     store={findCheapestGame(game.stores)[0]}
                     shouldRedirect={false}
                   />
-                  {/* <MoreInfo>
-                    <p>Ver más informacíon</p>
-                  </MoreInfo> */}
                 </StoresContainer>
-
-                {/* <MoreInfo>
-                  <CustomBtn
-                    text="Añadir a lista de deseados"
-                    icon={<FaBell />}
-                  />
-                
-                </MoreInfo> */}
               </InfoGame>
             </CardGame>
           );
@@ -100,7 +89,7 @@ const CardGame = styled.div<CardGameProps>`
   background-size: cover; */
   filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.2));
   background-color: ${({ theme }) => theme.cardGame};
-  /* border-radius: 5px; */
+
   padding: 10px 10px;
   max-width: 400px;
   width: 100%;
@@ -178,24 +167,6 @@ const TitleGame = styled.h2`
   }
 `;
 
-// const MoreInfo = styled.div`
-//   width: 100%;
-//   cursor: pointer;
-//   p {
-//     opacity: 0.9;
-//     text-align: center;
-//     font-weight: bold;
-//     font-size: 12px;
-//     transition: color 300ms ease, text-decoration 600ms ease;
-//   }
-//   &:hover {
-//     p {
-//       color: ${({ theme }) => theme.textHover};
-//       text-decoration: underline;
-//     }
-//   }
-// `;
-
 const StoresContainer = styled.div`
   display: flex;
   gap: 10px;
@@ -206,9 +177,6 @@ const StoresContainer = styled.div`
 export const getImgGame = (game: Game, size: ImgSizes) => {
   if (game.infoGame.length > 0 && "cover" in game.infoGame[0]) {
     return `https://images.igdb.com/igdb/image/upload/t_${size}/${game.infoGame[0].cover.image_id}.jpg`;
-    // return background
-    //   ? `https://images.igdb.com/igdb/image/upload/t_screenshot_med/${game.infoGame[0].cover.image_id}.jpg`
-    //   : `https://images.igdb.com/igdb/image/upload/t_720p/${game.infoGame[0].cover.image_id}.jpg`;
   }
   const correctStore = game.stores.find((store) => store.game_id === game.id);
 
