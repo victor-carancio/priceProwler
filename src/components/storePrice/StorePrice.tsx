@@ -93,8 +93,8 @@ export const StoreGame = styled.a<StoreNameProps>`
     `
    &:hover {
     background-color: 
-      storeColors[${$storeName} as StoreTypes].hoverCardBackground;
-    transform: translate(0, -1px);
+    ${storeColors[$storeName as StoreTypes].hoverCardBackground};
+    transform: translate(0, -2px);
   }
   `}
 `;
