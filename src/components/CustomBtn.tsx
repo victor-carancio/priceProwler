@@ -16,7 +16,6 @@ const CustomBtn = ({ text, icon }: CustomBtnProps) => {
 };
 
 const Button = styled.div`
-  /* background-color: red; */
   border-radius: 3px;
   width: auto;
   height: 25px;
