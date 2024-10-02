@@ -1,7 +1,8 @@
+import { GameData, GameDetails } from "./../../@types/global.d";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
-import { GameData, GameDetails } from "../../types";
+// import { GameData, GameDetails } from "../../types";
 
 export const gameApiSlice = createApi({
   reducerPath: "gameApi",

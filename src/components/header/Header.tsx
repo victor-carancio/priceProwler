@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { IoIosMenu, IoIosSearch, IoIosSunny, IoIosMoon } from "react-icons/io";
-import { FaUserLarge } from "react-icons/fa6";
+
+import { IoMdPerson } from "react-icons/io";
 import { StyledIcon } from "../logo";
 import { useAppSelector } from "../../store/hooks/useAppSelector";
 import { useAppDispatch } from "../../store/hooks/useAppDispatch";
@@ -40,7 +41,7 @@ const Header = () => {
           </ThemeSwitch>
           <Auth>
             <StyledIcon>
-              <FaUserLarge />
+              <IoMdPerson />
             </StyledIcon>
           </Auth>
         </Nav>
@@ -91,6 +92,7 @@ export const SearchOverlay = styled.div<SearchOverlayProps>`
 `;
 
 const Nav = styled.nav`
+  /* height: 30px; */
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-end;
@@ -103,6 +105,10 @@ const Nav = styled.nav`
   }
 `;
 
-const ThemeSwitch = styled.div``;
+const ThemeSwitch = styled.div`
+  /* height: 30px; */
+`;
 
-const Auth = styled.div``;
+const Auth = styled.div`
+  /* height: 30px; */
+`;
