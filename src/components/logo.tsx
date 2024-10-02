@@ -3,7 +3,7 @@ import { IconBaseProps, IconContext } from "react-icons";
 
 import { FaSteam, FaXbox } from "react-icons/fa";
 import { SiEpicgames } from "react-icons/si";
-import { StoreTypes } from "../types";
+import { StoreTypes } from "../@types/global.d";
 
 interface ProviderProps {
   className?: string;
@@ -26,7 +26,7 @@ const Provider = ({
 );
 
 export const StyledIcon = styled(Provider)<IconBaseProps>`
-  font-size: 27px;
+  font-size: 30px;
 
   cursor: pointer;
   color: ${({ theme }) => theme.logo};

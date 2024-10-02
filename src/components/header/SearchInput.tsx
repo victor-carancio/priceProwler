@@ -18,8 +18,11 @@ const SearchInput = () => {
     });
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (
+    event: React.FormEvent<HTMLFormElement> | React.MouseEvent<SVGElement>
+  ) => {
     event.preventDefault();
+    console.log("jio");
 
     if (formData.gameName !== "") {
       navigate(`/results?search=${encodeURIComponent(formData.gameName)}`);
@@ -35,9 +38,10 @@ const SearchInput = () => {
         onChange={handleChange}
         className="search-input"
         placeholder="Buscar videojuego..."
+        autoComplete="off"
       />
       <StyledIcon className="input-logo">
-        <IoIosSearch />
+        <IoIosSearch onClick={handleSubmit} />
       </StyledIcon>
     </InputContainer>
   );
@@ -57,7 +61,27 @@ const InputContainer = styled.form`
     height: 50px;
     width: 800px;
   }
+
   .search-input {
+    padding: 0 40px 0px 20px;
+    height: 70%;
+    width: 100%;
+    font-weight: bold;
+    font-size: 13px;
+    background-color: ${({ theme }) => theme.card};
+    border: none;
+    border-radius: 5px;
+    color: ${({ theme }) => theme.text};
+  }
+
+  .input-logo {
+    /* background-color: red; */
+    position: absolute;
+    right: 10px;
+    transform: scale(0.8);
+  }
+
+  /* .search-input {
     padding: 0 10px;
     height: 70%;
     width: 100%;
@@ -72,5 +96,5 @@ const InputContainer = styled.form`
     position: absolute;
     right: 0;
     margin-right: 5px;
-  }
+  } */
 `;

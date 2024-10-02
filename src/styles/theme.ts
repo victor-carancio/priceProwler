@@ -1,5 +1,5 @@
 import { DefaultTheme } from "styled-components/dist/types";
-import { StoreStyles, StoreTypes } from "../types";
+import { StoreStyles, StoreTypes } from "../@types/global.d";
 
 export const lightTheme: DefaultTheme = {
   // body: "#fff",

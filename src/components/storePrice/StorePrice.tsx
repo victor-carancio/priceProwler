@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Store, StoreTypes } from "../../types";
+import { Store, StoreTypes } from "../../@types/global.d";
 import { device } from "../../styles/media";
 import { StyledStoreIcon } from "../logo";
 
@@ -68,13 +68,13 @@ interface StoreNameProps {
 
 export const StoreGame = styled.a<StoreNameProps>`
   cursor: pointer;
-  border-radius: 5px;
+  /* border-radius: 5px; */
   background-color: ${({ $storeName }) =>
     storeColors[$storeName as StoreTypes].cardBackground};
   width: 100%;
   height: ${({ $detail }) => ($detail ? "50px" : "30px")};
   padding-left: 10px;
-  border-radius: 5px;
+  border-radius: 4px;
   display: flex;
   justify-content: space-between;
   align-items: center;

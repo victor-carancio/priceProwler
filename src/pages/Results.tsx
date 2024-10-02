@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { useGetGameFromNameDBQuery } from "../store/apis/gameApi";
 import styled from "styled-components";
-import { Game, ImgSizes, Store, StoreTypes } from "../types";
+import { Game, ImgSizes, Store, StoreTypes } from "../@types/global.d";
 import { device } from "../styles/media";
 import { useNavigate } from "react-router-dom";
 import StorePrice from "../components/storePrice/StorePrice";
@@ -100,7 +100,7 @@ const CardGame = styled.div<CardGameProps>`
   background-size: cover; */
   filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.2));
   background-color: ${({ theme }) => theme.cardGame};
-  border-radius: 5px;
+  /* border-radius: 5px; */
   padding: 10px 10px;
   max-width: 400px;
   width: 100%;
@@ -132,7 +132,7 @@ const ImgGame = styled.img`
   height: 130px;
   object-fit: cover;
   object-position: 50% 50%;
-  border-radius: 3px;
+  border-radius: 4px;
   cursor: pointer;
   opacity: 1;
 
@@ -162,6 +162,7 @@ const InfoGame = styled.div`
 `;
 
 const TitleGame = styled.h2`
+  /* text-align: center; */
   cursor: pointer;
   font-size: 14px;
 
@@ -169,7 +170,7 @@ const TitleGame = styled.h2`
   text-overflow: ellipsis;
   white-space: nowrap;
   @media ${device.tablet} {
-    padding: 0 5px;
+    padding: 0 8px;
     font-size: 15px;
   }
   @media ${device.laptop} {

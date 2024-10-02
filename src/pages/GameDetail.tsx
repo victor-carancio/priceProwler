@@ -2,7 +2,13 @@ import { useParams } from "react-router-dom";
 import { useGetGameDetailQuery } from "../store/apis/gameApi";
 import styled from "styled-components";
 import { getImgGame } from "./Results";
-import { GameDetails, ImgSizes, InvolvedCompany, StoreTypes } from "../types";
+import {
+  GameDetails,
+  ImgSizes,
+  InvolvedCompany,
+  NameIdClass,
+  StoreTypes,
+} from "../@types/global.d";
 import { device, deviceMax } from "../styles/media";
 import StorePrice from "../components/storePrice/StorePrice";
 import GameImagesGallery from "../components/imageGallery/GameImagesGallery";
@@ -20,7 +26,7 @@ const GameDetail = () => {
   const companyLogos = {
     ...getCompaniesInfo(data.infoGame[0].involved_companies),
   };
-  console.log(data);
+
   return (
     <ContainerGame $imageUrl={getImgGame(data, ImgSizes.HD_720_p_2X)}>
       <h2>{data.gameName}</h2>
@@ -48,7 +54,6 @@ const GameDetail = () => {
         </PricesDetail>
       </HeaderGame>
       <GalleryMobile className="">
-        {/* images={getImagesFromGame(data)} */}
         <GameImagesGallery images={getImagesFromGame(data)} />
       </GalleryMobile>
       <></>
@@ -61,9 +66,14 @@ const GameDetail = () => {
           </div>
 
           <p>{data.infoGame[0].summary}</p>
-          <h4>Trama</h4>
-          <hr />
-          <p>{data.infoGame[0].storyline}</p>
+          {data.infoGame[0].storyline && (
+            <>
+              {" "}
+              <h4>Trama</h4>
+              <hr />
+              <p>{data.infoGame[0].storyline}</p>
+            </>
+          )}
         </Overview>
         <InfoOfGame>
           <div>
@@ -76,35 +86,40 @@ const GameDetail = () => {
             <span>16</span>
           </InfoContainer>
 
-          <InfoContainer>
-            <p>Desarrollador</p>
-            {/* {getCompanies(data.infoGame[0].involved_companies).developer.name} */}
-            <span>{companyLogos.developer}</span>
-          </InfoContainer>
+          {companyLogos.developer && (
+            <InfoContainer>
+              <p>Desarrollador</p>
+              <span>{companyLogos.developer}</span>
+            </InfoContainer>
+          )}
 
-          <InfoContainer>
-            <p>Editor</p>
-            <span>{companyLogos.publisher}</span>
-            {/* {getCompanies(data.infoGame[0].involved_companies).publisher.name} */}
-          </InfoContainer>
+          {companyLogos.publisher && (
+            <InfoContainer>
+              <div>
+                <p>Editor</p>
+              </div>
 
-          <InfoContainer>
-            <p>Encargado del port</p>
-            <span>{companyLogos.porting}</span>
-            {/* {getCompanies(data.infoGame[0].involved_companies).porting.name} */}
-          </InfoContainer>
+              <span>{companyLogos.publisher}</span>
+            </InfoContainer>
+          )}
 
-          <InfoContainer>
-            <p>Desarrollador de soporte</p>
-            <span>{companyLogos.supporting}</span>
-            {/* {getCompanies(data.infoGame[0].involved_companies).porting.name} */}
-          </InfoContainer>
+          {companyLogos.porting && (
+            <InfoContainer>
+              <p>Encargado del port</p>
+              <span>{companyLogos.porting}</span>
+            </InfoContainer>
+          )}
+
+          {companyLogos.supporting && (
+            <InfoContainer>
+              <p>Desarrollador de soporte</p>
+              <span>{companyLogos.supporting}</span>
+            </InfoContainer>
+          )}
 
           <InfoContainer>
             <p>Género</p>
-            <span>
-              {data.infoGame[0].genres.map((genre) => genre.name).join(", ")}
-            </span>
+            <span>{getInfoOfGameNames(data.infoGame[0].genres)}</span>
           </InfoContainer>
 
           <InfoContainer>
@@ -116,17 +131,14 @@ const GameDetail = () => {
 
           <InfoContainer>
             <p>Motor</p>
-            {data.infoGame[0].game_engines.map((engine) => {
-              return <span key={engine.id}>{engine.name}</span>;
-            })}
+            {getInfoOfGameNames(data.infoGame[0].game_engines)}
           </InfoContainer>
           <InfoContainer>
-            <p>Keywords</p>
-            <span>
-              {data.infoGame[0].keywords
-                .map((keyword) => keyword.name)
-                .join(", ")}
-            </span>
+            <div>
+              <p>Keywords</p>
+            </div>
+
+            <span>{getInfoOfGameNames(data.infoGame[0].keywords)}</span>
           </InfoContainer>
         </InfoOfGame>
       </AboutGame>
@@ -185,10 +197,6 @@ const HeaderGame = styled.div`
     height: 500px;
     gap: 15px;
   }
-
-  @media ${device.laptop} {
-    /* justify-content: center; */
-  }
 `;
 
 const MainInfo = styled.div`
@@ -218,8 +226,6 @@ const CoverGame = styled.img`
 `;
 
 const PricesDetail = styled.div`
-  /* background-color: ${({ theme }) => theme.cardGame}; */
-  /* padding: 10px; */
   height: auto;
   width: 100%;
   max-width: 340px;
@@ -227,24 +233,17 @@ const PricesDetail = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  /* display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-content: center; */
+
   @media ${device.tablet} {
-    /* padding: 10px; */
     width: 40%;
     margin: 0;
     max-width: 450px;
-    /* background-color: green; */
   }
 
   @media ${device.laptop} {
-    /* padding: 10px; */
     width: 30%;
     margin: 0;
     max-width: 450px;
-    /* background-color: green; */
   }
 `;
 
@@ -252,7 +251,6 @@ const StoreContainer = styled.div`
   max-width: 500px;
   width: 100%;
   padding: 7px 0;
-  /* background-color: red; */
 `;
 
 const GalleryMobile = styled.div`
@@ -268,7 +266,6 @@ const GalleryMobile = styled.div`
 const GalleryTablet = styled.div`
   filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.4));
   margin: 0 auto;
-  /* padding: 0 10px; */
   width: 100%;
   max-width: 600px;
   @media ${deviceMax.tablet} {
@@ -324,15 +321,19 @@ const InfoOfGame = styled.div`
 `;
 
 const InfoContainer = styled.div`
-  /* font-size: 16px; */
   display: flex;
   flex-flow: row nowrap;
   gap: 10px;
-  /* align-items: center; */
-  /* gap: 10px; */
+  & div:first-child {
+    width: 102px;
+  }
   p {
     font-weight: bold;
     width: 102px;
+  }
+  span {
+    width: 68%;
+    overflow: hidden;
   }
 `;
 
@@ -389,11 +390,18 @@ const getCompaniesInfo = (involvedCompanies: InvolvedCompany[]) => {
     .map((company) => company.company.name);
 
   return {
-    developer: developer.join(", "),
-    publisher: publisher.join(", "),
-    porting: porting.join(", "),
-    supporting: supporting.join(", "),
+    developer: developer.length > 0 ? developer.join(" - ") : null,
+    publisher: publisher.length > 0 ? publisher.join(" - ") : null,
+    porting: porting.length > 0 ? porting.join(" - ") : null,
+    supporting: supporting.length > 0 ? supporting.join(" - ") : null,
   };
+};
+
+const getInfoOfGameNames = (info: NameIdClass[]) => {
+  return info
+    .map(({ name }) => name)
+    .slice(0, 10)
+    .join(" - ");
 };
 
 const unixTimeStampToDate = (unix: string) => {
