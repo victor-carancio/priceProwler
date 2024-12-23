@@ -1,7 +1,7 @@
 import ImagesGallery, { ReactImageGalleryItem } from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import styled from "styled-components";
-import { device } from "../../styles/media";
+// import { device } from "../../styles/media";
 
 //ejmplo
 // const images = [
@@ -32,19 +32,27 @@ interface GameImagesGalleryProps {
 }
 const GameImagesGallery = ({ images }: GameImagesGalleryProps) => {
   const renderItem = (item: ReactImageGalleryItem) => {
-    if (item.original.includes("youtube.com")) {
-      return (
-        <StyledIframe
-          className="image-gallery-image"
-          src={item.original}
-          height="100%"
-          title="YouTube video"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></StyledIframe>
-      );
-    }
+    // if (item.original.includes("youtube.com")) {
+    // return (
+    // <StyledIframe
+    //   className="image-gallery-image"
+    //   src={item.original}
+    //   height="100%"
+    //   title="YouTube video"
+    //   frameBorder="0"
+    //   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    //   allowFullScreen
+    // ></StyledIframe>
+    //   <StyledVideo
+    //     className="image-gallery-image"
+    //     src={item.original}
+    //     controls
+    //     height="100%"
+    //   >
+    //     Your browser does not support the video tag.
+    //   </StyledVideo>
+    // );
+    // }
 
     return <img className="image-gallery-image" src={item.original} />;
   };
@@ -81,12 +89,20 @@ const StyledGalleryWrapper = styled.div`
   }
 `;
 
-const StyledIframe = styled.iframe`
-  min-height: 270px;
+// const StyledVideo = styled.video`
+//   min-height: 270px;
 
-  @media ${device.laptop} {
-    min-height: 300px;
-  }
-`;
+//   @media ${device.laptop} {
+//     min-height: 300px;
+//   }
+// `;
+
+// const StyledIframe = styled.iframe`
+//   min-height: 270px;
+
+//   @media ${device.laptop} {
+//     min-height: 300px;
+//   }
+// `;
 
 export default GameImagesGallery;

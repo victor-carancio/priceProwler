@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Store, StoreTypes } from "../../@types/global.d";
+import { StoreReduced, StoreTypes } from "../../@types/global.d";
 import { device } from "../../styles/media";
 import { StyledStoreIcon } from "../logo";
 
@@ -7,7 +7,7 @@ import { storeColors } from "../../styles/theme";
 import GamepassIcon from "./GamepassIcon";
 
 interface StorePriceProps {
-  store: Store;
+  store: StoreReduced;
   shouldRedirect: boolean;
   detail?: boolean;
 }
@@ -33,26 +33,29 @@ const StorePrice = ({ store, shouldRedirect, detail }: StorePriceProps) => {
           <GamepassIcon height={detail ? "40px" : "25px"} fill="#f2ecff" />
         )}
       </StoreInfo>
-      {store.info[0].discount_percent !== "0" &&
-      store.info[0].discount_percent !== "-" ? (
+      {store.info_price.discount_percent !== "0" &&
+      store.info_price.discount_percent !== "-" ? (
         <DiscountPrice>
           <Discount $storeName={store.store} $detail={true}>
-            <p>{`${store.info[0].discount_percent}%`}</p>
+            <p>{`${store.info_price.discount_percent}%`}</p>
           </Discount>
           <Prices>
             <InitialPrice
               $storeName={store.store}
               $detail={detail}
-            >{`${store.info[0].initial_price} ${store.info[0].currency}`}</InitialPrice>
+            >{`${store.info_price.initial_price} ${store.info_price.currency}`}</InitialPrice>
             <NormalPrice $storeName={store.store} $detail={detail}>
-              {`${store.info[0].final_price} ${store.info[0].currency}`}
+              {`${store.info_price.final_price} ${store.info_price.currency}`}
             </NormalPrice>
           </Prices>
         </DiscountPrice>
       ) : (
         <Prices>
           <NormalPrice $storeName={store.store} $detail={detail}>
-            {`${store.info[0].initial_price} ${store.info[0].currency}`}
+            {store.info_price.final_price !== "Gratis" &&
+            store.info_price.final_price !== "Próximamente"
+              ? `${store.info_price.final_price} ${store.info_price.currency}`
+              : store.info_price.final_price}
           </NormalPrice>
         </Prices>
       )}

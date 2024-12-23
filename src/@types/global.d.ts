@@ -9,8 +9,7 @@ export interface Game {
   platform: string;
   createdAt: Date;
   updatedAt: Date;
-  stores: Store[];
-  infoGame: InfoGameReduced[];
+  stores: StoreReduced[];
 }
 
 export interface GameDetails {
@@ -19,98 +18,62 @@ export interface GameDetails {
   platform: string;
   createdAt: Date;
   updatedAt: Date;
-  stores: Store[];
-  infoGame: InfoGame[];
+  stores: StoreComplete[];
 }
 
 export interface InfoGameReduced {
   id: number;
-  name: string;
-  first_release_date: string;
-  storyline: string;
-  summary: string;
-  version_title: string;
-  cover: Cover;
-  genres: NameIdClass[];
-  keywords: NameIdClass[];
-  platforms: PlatformElement[];
+  storeIdGame: string;
+  imgStore: string;
+  genres: string[];
+  categories: string[];
+  about: string;
+  description: string;
+  release_date: string;
 }
 
 export interface InfoGame {
   id: number;
-  name: string;
-  first_release_date: string;
-  storyline: string;
-  summary: string;
-  version_title: string;
-  createdAt: Date;
-  updatedAt: Date;
-  cover: Cover;
-  alternative_names: AlternativeName[];
-  artworks: Cover[];
-  game_engines: NameIdClass[];
-  genres: NameIdClass[];
-  involved_companies: InvolvedCompany[];
-  keywords: NameIdClass[];
-  platforms: PlatformElement[];
+  storeIdGame: string;
+  imgStore: string;
+  genres: string[];
+  categories: string[];
+  about: string;
+  description: string;
+  release_date: string;
+  developer: string;
+  publisher: string;
+  pc_requirements?: {
+    id: number;
+    minimum: string;
+    recommended: string;
+  };
+  screenshots: Screenshot[];
+  supportedLanguages?: string;
   videos: Video[];
+  website: string;
+  ratings: Rating[] | null;
 }
 
-export interface AlternativeName {
-  alternative_name_id: number;
-  info_game_id: number;
-}
-
-export interface Cover {
+export interface Rating {
   id: number;
-  height: number;
+  name: string;
+  descriptors: string;
+  imageUrl: string | null;
+  rating: string;
+}
+export interface Screenshot {
+  id: number;
   url: string;
-  width: number;
-  image_id: string;
+  thumbUrl: string;
   info_game_id: number;
-}
-
-export interface NameIdClass {
-  id: number;
-  name: string;
-}
-
-export interface InvolvedCompany {
-  id: number;
-  developer: boolean;
-  porting: boolean;
-  publisher: boolean;
-  supporting: boolean;
-  company_id: number;
-  info_game_id: number;
-  company: Company;
-}
-
-export interface Company {
-  id: number;
-  country: number | null;
-  name: string;
-  start_date: string;
-  logo: Cover;
-}
-
-export interface PlatformElement {
-  platform_id: number;
-  info_game_id: number;
-  platform: PlatformPlatform;
-}
-
-export interface PlatformPlatform {
-  id: number;
-  abbreviation: string;
-  alternative_name: null | string;
-  name: string;
 }
 
 export interface Video {
   id: number;
-  name: string;
-  video_id: string;
+  title: string;
+  url: string;
+  thumbnail: string;
   info_game_id: number;
 }
 
@@ -118,6 +81,51 @@ export enum StoreTypes {
   STEAM_STORE = "Steam",
   XBOX_STORE = "Xbox",
   EPIC_STORE = "Epic",
+}
+
+export enum SteamImageSizes {
+  CAPSULE = "capsule_616x353",
+  HERO_CAPSULE = "hero_capsule",
+}
+
+export interface StoreReduced {
+  id: number;
+  store: string;
+  type: string;
+  url: string;
+  edition: string;
+  gamepass: boolean | null;
+  createdAt: Date;
+  updatedAt: Date;
+  game_id: number;
+  info_price: InfoPrice;
+  info_game: InfoGameReduced;
+}
+export interface StoreComplete {
+  id: number;
+  storeIdGame: string;
+  store: string;
+  type: string;
+  url: string;
+  edition: string;
+  gamepass: boolean | null;
+  createdAt: Date;
+  updatedAt: Date;
+  game_id: number;
+  info_price: InfoPrice;
+  info_game: InfoGame;
+}
+
+export interface InfoPrice {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  discount_percent: string;
+  initial_price: string;
+  final_price: string;
+  offer_end_date: Date | null;
+  currency: string;
+  store_game_id: number;
 }
 
 export interface StoreStyles {
@@ -128,33 +136,6 @@ export interface StoreStyles {
   cardFontColor: string;
   normalpriceColor: string;
   initialPriceColor: string;
-}
-
-export interface Store {
-  id: number;
-  storeIdGame: string;
-  store: string;
-  type: string;
-  url: string;
-  imgStore: string;
-  edition: string;
-  gamepass: boolean | null;
-  createdAt: Date;
-  updatedAt: Date;
-  game_id: number;
-  info: Info[];
-}
-
-export interface Info {
-  id: number;
-  createdAt: Date;
-  updatedAt: Date;
-  discount_percent: string;
-  initial_price: string;
-  final_price: string;
-  offer_end_date: Date | null;
-  currency: string;
-  store_game_id: number;
 }
 
 export enum ImgSizes {

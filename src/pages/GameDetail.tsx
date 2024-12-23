@@ -2,20 +2,38 @@ import { useParams } from "react-router-dom";
 import { useGetGameDetailQuery } from "../store/apis/gameApi";
 import styled from "styled-components";
 import { getImgGame } from "./Results";
+import { FaLink } from "react-icons/fa";
+
 import {
   GameDetails,
-  ImgSizes,
-  InvolvedCompany,
-  NameIdClass,
-  StoreTypes,
+  // ImgSizes,
+  Screenshot,
+  SteamImageSizes,
+  // Video,
+  // InvolvedCompany,
+  // NameIdClass,
+  // StoreTypes,
 } from "../@types/global.d";
 import { device, deviceMax } from "../styles/media";
 import StorePrice from "../components/storePrice/StorePrice";
 import GameImagesGallery from "../components/imageGallery/GameImagesGallery";
 import { Months } from "../utils";
+import { useRef, useState } from "react";
+import { StyledIcon } from "../components/logo";
 
 const GameDetail = () => {
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [maxHeight, setMaxHeight] = useState(0);
+  const contentRef = useRef<HTMLParagraphElement>(null);
   const { id } = useParams();
+
+  const toggleExpand = () => {
+    if (contentRef.current) {
+      setMaxHeight(contentRef.current.scrollHeight);
+    }
+
+    setIsDescriptionExpanded(!isDescriptionExpanded);
+  };
 
   const { data, error, isLoading } = useGetGameDetailQuery(id!);
 
@@ -23,22 +41,23 @@ const GameDetail = () => {
   if (isLoading) return <div>Cargando games....</div>;
   if (error || !data) return <div>Ocurrió un error al cargar los datos</div>;
 
-  const companyLogos = {
-    ...getCompaniesInfo(data.infoGame[0].involved_companies),
-  };
-
+  const game = { ...getStoreInfo(data) };
+  // const jio = "Blood and Gore\r\nIntense Violence\r\nStrong Language";
+  //data.stores[0].info_game.screenshots[0].url
+  // getImgGame(data, SteamImageSizes.CAPSULE)
+  console.log(data);
   return (
-    <ContainerGame $imageUrl={getImgGame(data, ImgSizes.HD_720_p_2X)}>
-      <h2>{data.gameName}</h2>
+    <ContainerGame $imageUrl={data.stores[0].info_game.screenshots[0].url}>
+      <h2>{game.gameName}</h2>
 
-      <HeaderGame>
+      <HeaderGame $imageUrl={getImgGame(data, SteamImageSizes.CAPSULE)}>
         <MainInfo>
           <CoverGame
-            src={getImgGame(data, ImgSizes.COVER_BIG_2X)}
+            src={getImgGame(data, SteamImageSizes.CAPSULE)}
             alt={`${data.gameName}-img`}
           />
           <GalleryTablet>
-            <GameImagesGallery images={getImagesFromGame(data)} />
+            <GameImagesGallery images={getImagesFromGame(game.screenshots)} />
           </GalleryTablet>
         </MainInfo>
         <PricesDetail>
@@ -53,7 +72,7 @@ const GameDetail = () => {
         </PricesDetail>
       </HeaderGame>
       <GalleryMobile className="">
-        <GameImagesGallery images={getImagesFromGame(data)} />
+        <GameImagesGallery images={getImagesFromGame(game.screenshots)} />
       </GalleryMobile>
       <></>
 
@@ -64,15 +83,97 @@ const GameDetail = () => {
             <hr />
           </div>
 
-          <p>{data.infoGame[0].summary}</p>
-          {data.infoGame[0].storyline && (
+          <p>{game.about}</p>
+          {game.description && (
             <>
-              {" "}
-              <h4>Trama</h4>
-              <hr />
-              <p>{data.infoGame[0].storyline}</p>
+              <GameDescription
+                $isExpanded={isDescriptionExpanded}
+                $maxHeight={maxHeight}
+                ref={contentRef}
+              >
+                <h4>Descripción</h4>
+                <hr />
+                <br />
+                <p>
+                  {game.description.split("\n").map((line, index) => {
+                    return (
+                      <>
+                        {line}
+                        {index !== game.description.split("\n").length - 1 && (
+                          <>
+                            <br />
+                          </>
+                        )}
+                      </>
+                    );
+                  })}
+                </p>
+              </GameDescription>
+              <ViewMore onClick={toggleExpand}>
+                {isDescriptionExpanded ? "Ver menos" : "Ver más"}
+              </ViewMore>
             </>
           )}
+
+          {game.pc_requirements?.minimum &&
+            game.pc_requirements.recommended && (
+              <div>
+                <h4>Requisitos del sistema</h4>
+                <hr />
+                <br />
+                <p>
+                  {" "}
+                  {game.pc_requirements.minimum
+                    .split("\n")
+                    .map((line, index) => {
+                      return (
+                        <>
+                          {index === 0 ? (
+                            <strong>{line.toUpperCase()}</strong>
+                          ) : (
+                            <>{` • ${line}`}</>
+                          )}
+                          {index !==
+                            game.pc_requirements!.minimum.split("\n").length -
+                              1 && (
+                            <>
+                              <br />
+                              <br />
+                            </>
+                          )}
+                        </>
+                      );
+                    })}
+                </p>
+
+                <br />
+                <p>
+                  {" "}
+                  {game.pc_requirements.recommended
+                    .split("\n")
+                    .map((line, index) => {
+                      return (
+                        <>
+                          {index === 0 ? (
+                            <strong>{line.toUpperCase()}</strong>
+                          ) : (
+                            <>{` • ${line}`}</>
+                          )}
+                          {index !==
+                            game.pc_requirements!.recommended.split("\n")
+                              .length -
+                              1 && (
+                            <>
+                              <br />
+                              <br />
+                            </>
+                          )}
+                        </>
+                      );
+                    })}
+                </p>
+              </div>
+            )}
         </Overview>
         <InfoOfGame>
           <div>
@@ -80,65 +181,74 @@ const GameDetail = () => {
             <hr />
           </div>
 
-          <InfoContainer>
-            <p>Clasificación por edad</p>
-            <span>16</span>
-          </InfoContainer>
-
-          {companyLogos.developer && (
+          {game.ratings && (
             <InfoContainer>
-              <p>Desarrollador</p>
-              <span>{companyLogos.developer}</span>
+              <p>{game.ratings.name}</p>
+              <span>
+                {" "}
+                <strong>{`${game.ratings.rating.toUpperCase()}
+              `}</strong>{" "}
+                - {game.ratings.descriptors}
+              </span>
             </InfoContainer>
           )}
 
-          {companyLogos.publisher && (
+          {game.developer && (
+            <InfoContainer>
+              <p>Desarrollador</p>
+              <span>{game.developer}</span>
+            </InfoContainer>
+          )}
+
+          {game.publisher && (
             <InfoContainer>
               <div>
                 <p>Editor</p>
               </div>
-
-              <span>{companyLogos.publisher}</span>
+              <span>{game.publisher}</span>
             </InfoContainer>
           )}
 
-          {companyLogos.porting && (
+          {game.genres && (
             <InfoContainer>
-              <p>Encargado del port</p>
-              <span>{companyLogos.porting}</span>
+              <p>Género</p>
+              <span>{getInfoOfGameNames(game.genres)}</span>
             </InfoContainer>
           )}
 
-          {companyLogos.supporting && (
+          {game.release_date && (
             <InfoContainer>
-              <p>Desarrollador de soporte</p>
-              <span>{companyLogos.supporting}</span>
+              <p>Lanzamiento</p>
+              <span>{getCorrectDate(game.store, game.release_date)}</span>
             </InfoContainer>
           )}
 
-          <InfoContainer>
-            <p>Género</p>
-            <span>{getInfoOfGameNames(data.infoGame[0].genres)}</span>
-          </InfoContainer>
+          {game.supportedLanguages !== "-" && (
+            <InfoContainer>
+              <p>Lenguajes</p>
+              <span>{game.supportedLanguages}</span>
+            </InfoContainer>
+          )}
 
-          <InfoContainer>
-            <p>Lanzamiento</p>
-            <span>
-              {unixTimeStampToDate(data.infoGame[0].first_release_date)}
-            </span>
-          </InfoContainer>
+          {game.categories && (
+            <InfoContainer>
+              <div>
+                <p>Categorías</p>
+              </div>
+              <span>{getInfoOfGameNames(game.categories)}</span>
+            </InfoContainer>
+          )}
 
-          <InfoContainer>
-            <p>Motor</p>
-            {getInfoOfGameNames(data.infoGame[0].game_engines)}
-          </InfoContainer>
-          <InfoContainer>
-            <div>
-              <p>Keywords</p>
-            </div>
-
-            <span>{getInfoOfGameNames(data.infoGame[0].keywords)}</span>
-          </InfoContainer>
+          {game.website !== "-" && (
+            <WebSiteContainer>
+              <a href={game.website} target="_blank">
+                Sitio web
+              </a>
+              <StyledIcon>
+                <FaLink size="14px" />
+              </StyledIcon>
+            </WebSiteContainer>
+          )}
         </InfoOfGame>
       </AboutGame>
     </ContainerGame>
@@ -154,11 +264,6 @@ const ContainerGame = styled.div<ContainerGameProps>`
   max-width: 1440px;
   padding: 40px 10px;
   width: 100%;
-  background-image: ${({ theme, $imageUrl }) =>
-    `radial-gradient(${theme.bodyBackgroundGradient}), url(${$imageUrl}) `};
-  background-repeat: no-repeat;
-  background-position: top center;
-  background-size: cover;
 
   @media ${device.tablet} {
     padding: 60px 15px;
@@ -173,13 +278,15 @@ const ContainerGame = styled.div<ContainerGameProps>`
   }
 `;
 
-const HeaderGame = styled.div`
+const HeaderGame = styled.div<ContainerGameProps>`
   margin: 20px 0;
   padding: 20px 15px;
   width: 100%;
   display: flex;
   flex-flow: column;
   gap: 10px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+
   background-color: ${({ theme }) => theme.cardGameOpaque};
 
   border-radius: 5px;
@@ -191,6 +298,30 @@ const HeaderGame = styled.div`
     align-items: center;
     height: 500px;
     gap: 15px;
+
+    &::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: -1;
+      display: block;
+      margin: 0 auto;
+      background-image: ${({ theme, $imageUrl }) =>
+        `radial-gradient(${theme.bodyBackgroundGradient}), url(${$imageUrl}) `};
+      background-repeat: no-repeat;
+      background-position: top center;
+      background-size: cover;
+      /* width: 80%; */
+      height: 100%;
+      /* max-width: 1440px; */
+      -webkit-filter: blur(7px);
+      -moz-filter: blur(7px);
+      -o-filter: blur(7px);
+      -ms-filter: blur(7px);
+      filter: blur(7px);
+    }
   }
 `;
 
@@ -278,6 +409,7 @@ const AboutGame = styled.div`
     width: 100%;
     flex-flow: row nowrap;
     justify-content: space-between;
+    align-items: flex-start;
   }
   h4 {
     font-size: 18px;
@@ -290,22 +422,65 @@ const AboutGame = styled.div`
 `;
 
 const Overview = styled.div`
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  padding: 10px;
+  /* background-color: ${({ theme }) => theme.background}; */
+  background-color: ${({ theme }) => theme.cardGameOpaque};
+  order: 2;
   display: flex;
   flex-direction: column;
   gap: 14px;
   @media ${device.laptop} {
+    order: 1;
     width: 65%;
+  }
+`;
+interface GameDescriptionProps {
+  $isExpanded: boolean;
+  $maxHeight: number;
+}
+const GameDescription = styled.div<GameDescriptionProps>`
+  height: ${({ $isExpanded, $maxHeight }) =>
+    $isExpanded ? `${$maxHeight}px` : "200px"};
+  overflow: hidden;
+  transition: height 300ms ease;
+`;
+
+const ViewMore = styled.div`
+  box-sizing: content-box;
+  cursor: pointer;
+  align-self: flex-end;
+  text-align: center;
+  background-color: ${({ theme }) => theme.card};
+  padding: 3px 8px;
+  width: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.textBody};
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  border: 0.5px solid transparent;
+  transition: border-color 300ms ease-in-out, background-color 300ms ease-in-out;
+  &:hover {
+    color: ${({ theme }) => theme.text};
+    border-color: ${({ theme }) => theme.textBody};
+    background-color: ${({ theme }) => theme.background};
   }
 `;
 
 const InfoOfGame = styled.div`
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  padding: 10px;
+  order: 1;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 12px;
+  /* background-color: ${({ theme }) => theme.background}; */
+  background-color: ${({ theme }) => theme.cardGameOpaque};
   @media ${device.laptop} {
-    width: 30%;
+    order: 2;
+    width: 33%;
   }
 `;
 
@@ -313,6 +488,7 @@ const InfoContainer = styled.div`
   display: flex;
   flex-flow: row nowrap;
   gap: 10px;
+
   & div:first-child {
     width: 102px;
   }
@@ -326,76 +502,143 @@ const InfoContainer = styled.div`
   }
 `;
 
-const getImagesFromGame = (game: GameDetails) => {
-  const { infoGame, stores } = game;
-
-  const storeImage: Record<StoreTypes, string> = {
-    [StoreTypes.STEAM_STORE]: "",
-    [StoreTypes.EPIC_STORE]: "?h=352&amp;quality=medium&amp;resize=1&amp;w=264",
-    [StoreTypes.XBOX_STORE]: "?q=100&h=352&w=265",
-  };
-  if (!infoGame || infoGame.length <= 0) {
-    return stores.map((store) => {
-      return {
-        original: store.imgStore,
-        thumbnail: `${store.imgStore}${storeImage[store.store as StoreTypes]}`,
-        fullscreen: store.imgStore,
-      };
-    });
+const WebSiteContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 6px 8px;
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: ${({ theme }) => theme.card};
+  color: ${({ theme }) => theme.textBody};
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  border: 1px solid transparent;
+  transition: border-color 300ms ease-in-out, background-color 300ms ease-in-out;
+  &:hover {
+    color: ${({ theme }) => theme.text};
+    border-color: ${({ theme }) => theme.textBody};
+    background-color: ${({ theme }) => theme.background};
   }
+`;
 
-  const artworks = infoGame[0].artworks.map((artwork) => {
+const getImagesFromGame = (screenshots: Screenshot[]) => {
+  return screenshots.map((image) => {
     return {
-      original: `https://images.igdb.com/igdb/image/upload/t_${ImgSizes.HD_720_p}/${artwork.image_id}.jpg`,
-      thumbnail: `https://images.igdb.com/igdb/image/upload/t_${ImgSizes.LOGO_MED}/${artwork.image_id}.jpg`,
-      fullscreen: `https://images.igdb.com/igdb/image/upload/t_${ImgSizes.HD_720_p_2X}/${artwork.image_id}.jpg`,
+      original: image.url,
+      thumbnail: image.thumbUrl === "-" ? image.url : image.thumbUrl,
+      fullscreen: image.url,
     };
   });
-
-  const videos = infoGame[0].videos.map((video) => {
-    return {
-      original: `https://www.youtube.com/embed/${video.video_id}`,
-      thumbnail: `https://img.youtube.com/vi/${video.video_id}/0.jpg`,
-      fullscreen: `https://www.youtube.com/embed/${video.video_id}`,
-    };
-  });
-
-  return [...artworks, ...videos];
 };
 
-const getCompaniesInfo = (involvedCompanies: InvolvedCompany[]) => {
-  const developer = involvedCompanies
-    .filter((company) => company.developer)
-    .map((company) => company.company.name);
-  const publisher = involvedCompanies
-    .filter((company) => company.publisher)
-    .map((company) => company.company.name);
-  const porting = involvedCompanies
-    .filter((company) => company.porting)
-    .map((company) => company.company.name);
+const getStoreInfo = (game: GameDetails) => {
+  const { gameName, id: gameId, stores } = game;
 
-  const supporting = involvedCompanies
-    .filter((company) => company.supporting)
-    .map((company) => company.company.name);
+  const steam = stores.find((store) => store.store === "Steam");
+  const xbox = stores.find((store) => store.store === "Xbox");
+  const epic = stores.find((store) => store.store === "Epic");
+
+  const existStore = steam ?? xbox ?? epic!;
+
+  const {
+    gamepass,
+    id: storeId,
+    info_game,
+    info_price,
+    store,
+    url,
+  } = existStore;
+
+  const {
+    about,
+    categories,
+    description,
+    developer,
+    genres,
+    id: infoGameId,
+    imgStore,
+    publisher,
+    release_date,
+    screenshots,
+    videos,
+    website,
+    pc_requirements,
+    supportedLanguages,
+    ratings,
+  } = info_game;
 
   return {
-    developer: developer.length > 0 ? developer.join(" - ") : null,
-    publisher: publisher.length > 0 ? publisher.join(" - ") : null,
-    porting: porting.length > 0 ? porting.join(" - ") : null,
-    supporting: supporting.length > 0 ? supporting.join(" - ") : null,
+    gameName,
+    gameId,
+
+    gamepass,
+    storeId,
+    info_price,
+    store,
+    url,
+    about,
+    categories,
+    description,
+    developer,
+    genres,
+    infoGameId,
+    imgStore,
+    publisher,
+    release_date,
+    screenshots,
+    videos,
+    website,
+    pc_requirements,
+    supportedLanguages,
+    ratings: ratings ? ratings[0] : null,
   };
 };
 
-const getInfoOfGameNames = (info: NameIdClass[]) => {
+const getInfoOfGameNames = (info: string[]) => {
   return info
-    .map(({ name }) => name)
+    .map((name) => name)
     .slice(0, 10)
     .join(" - ");
 };
 
-const unixTimeStampToDate = (unix: string) => {
-  const unixTimeStamp = parseInt(unix, 10);
-  const date = new Date(unixTimeStamp * 1000);
+const transformDate = (dateString: string) => {
+  // Diccionario para convertir meses en español a números
+  const months = {
+    ENE: "01",
+    FEB: "02",
+    MAR: "03",
+    ABR: "04",
+    MAY: "05",
+    JUN: "06",
+    JUL: "07",
+    AGO: "08",
+    SEP: "09",
+    OCT: "10",
+    NOV: "11",
+    DIC: "12",
+  };
+
+  // Separar los componentes de la fecha
+  const [day, month, year] = dateString.split(" ");
+
+  // Formatear la fecha como YYYY-MM-DDT00:00:00.000Z
+  const formattedDate = `${year}-${
+    months[month as keyof typeof months]
+  }-${day.padStart(2, "0")}`;
+
+  return formattedDate;
+};
+
+const getCorrectDate = (store: string, release_date: string) => {
+  const correctReleaseDate =
+    store !== "Steam" ? release_date : transformDate(release_date);
+
+  const date = new Date(correctReleaseDate);
 
   return `${date.getDay()} de ${
     Months[date.getMonth()]

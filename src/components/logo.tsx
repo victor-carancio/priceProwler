@@ -27,7 +27,7 @@ const Provider = ({
 
 export const StyledIcon = styled(Provider)<IconBaseProps>`
   font-size: 30px;
-
+  font-size: ${({ size }) => `${size ? size : "30"}px `};
   cursor: pointer;
   color: ${({ theme }) => theme.logo};
   transition: color 300ms ease, transform 200ms ease;

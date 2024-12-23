@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { useGetGameFromNameDBQuery } from "../store/apis/gameApi";
 import styled from "styled-components";
-import { Game, ImgSizes, Store, StoreTypes } from "../@types/global.d";
+import { Game, SteamImageSizes, StoreTypes } from "../@types/global.d";
 import { device } from "../styles/media";
 import { useNavigate } from "react-router-dom";
 import StorePrice from "../components/storePrice/StorePrice";
@@ -22,6 +22,7 @@ const Results = () => {
   if (isLoading) return <div>Cargando games....</div>;
   if (error) return <div>Ocurrió un error al cargar los datos</div>;
 
+  // console.log(data);
   return (
     <ResultContainer>
       {data &&
@@ -29,12 +30,12 @@ const Results = () => {
           return (
             <CardGame
               key={game.id}
-              $imageUrl={getImgGame(game, ImgSizes.NONE)}
+              $imageUrl={getImgGame(game, SteamImageSizes.HERO_CAPSULE)}
               onClick={() => handleNavigateToDetail(game.id)}
             >
               <div>
                 <ImgGame
-                  src={getImgGame(game, ImgSizes.HD_720_p)}
+                  src={getImgGame(game, SteamImageSizes.HERO_CAPSULE)}
                   alt={`${game.gameName}-img`}
                   onClick={() => handleNavigateToDetail(game.id)}
                 />
@@ -43,10 +44,7 @@ const Results = () => {
               <InfoGame>
                 <TitleGame>{capitalizeEachWord(game.gameName)}</TitleGame>
                 <StoresContainer>
-                  <StorePrice
-                    store={findCheapestGame(game.stores)[0]}
-                    shouldRedirect={false}
-                  />
+                  <StorePrice store={game.stores[0]} shouldRedirect={false} />
                 </StoresContainer>
               </InfoGame>
             </CardGame>
@@ -106,8 +104,10 @@ const CardGame = styled.div<CardGameProps>`
   @media ${device.tablet} {
     padding: 0px;
     flex-direction: column;
-    height: 330px;
-    max-width: 230px;
+    height: 250px;
+    max-width: 350px;
+    /* height: 330px; */
+    /* max-width: 230px; */
   }
   transition: filter 300ms ease, transform 300ms ease;
   &:hover {
@@ -126,10 +126,10 @@ const ImgGame = styled.img`
   opacity: 1;
 
   @media ${device.tablet} {
-    width: 230px;
-    height: 260px;
+    width: 350px;
+    height: 180px;
     object-fit: cover;
-    object-position: 50% top;
+    /* object-position: 50% top; */
   }
 `;
 
@@ -174,45 +174,37 @@ const StoresContainer = styled.div`
   /* margin: auto 0; */
 `;
 
-export const getImgGame = (game: Game, size: ImgSizes) => {
-  if (game.infoGame.length > 0 && "cover" in game.infoGame[0]) {
-    return `https://images.igdb.com/igdb/image/upload/t_${size}/${game.infoGame[0].cover.image_id}.jpg`;
-  }
+export const getImgGame = (game: Game, size: SteamImageSizes) => {
+  // if (game.stores.length > 0 && "cover" in game.infoGame[0]) {
+  //   return `https://images.igdb.com/igdb/image/upload/t_${size}/${game.infoGame[0].cover.image_id}.jpg`;
+  // }
   const correctStore = game.stores.find((store) => store.game_id === game.id);
 
   if (!correctStore) {
     return "img/defult.jpg";
   }
 
-  const { store, imgStore } = correctStore;
-  if (ImgSizes.NONE === size) {
-    return imgStore;
-  }
+  const { store, info_game } = correctStore;
+  // if (ImgSizes.NONE === size) {
+  //   return info_game.imgStore;
+  // }
 
   const storeImage: Record<StoreTypes, string> = {
     [StoreTypes.STEAM_STORE]: "",
-    [StoreTypes.EPIC_STORE]: "?h=352&amp;quality=medium&amp;resize=1&amp;w=264",
+    [StoreTypes.EPIC_STORE]: "?h=352&amp;quality=medium&amp;resize=1&amp;w=264", //"?h=352&amp;quality=medium&amp;resize=1&amp;w=264", "?resize=1&w=460&h=215&quality=medium"
     [StoreTypes.XBOX_STORE]: "?q=100&h=352&w=265",
   };
   //569 x 320
-  return `${imgStore}${storeImage[store as StoreTypes]}`;
-};
-
-const findCheapestGame = (stores: Store[]) => {
-  return [...stores].sort((a, b) => {
-    const finalPriceA = parseInt(a.info[0].final_price);
-    const finalPriceB = parseInt(b.info[0].final_price);
-
-    if (finalPriceA > finalPriceB) {
-      return 1;
-    }
-
-    if (finalPriceA < finalPriceB) {
-      return -1;
-    }
-
-    return 0;
-  });
+  // console.log("-----------------------");
+  // console.log(game.gameName);
+  // console.log(info_game.imgStore);
+  // console.log("-----------------------");
+  // if (store === StoreTypes.STEAM_STORE) {
+  //   return info_game.imgStore.replace("header", size);
+  // }
+  console.log(size);
+  console.log(`${info_game.imgStore}${storeImage[store as StoreTypes]}`);
+  return `${info_game.imgStore}${storeImage[store as StoreTypes]}`;
 };
 
 export default Results;
