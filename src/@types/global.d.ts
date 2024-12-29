@@ -1,3 +1,7 @@
+export interface FeaturedGames {
+  feature: string;
+  games: Game[];
+}
 export interface GameData {
   nbHts: number;
   data: Game[];

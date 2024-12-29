@@ -1,183 +1,119 @@
 import { useSearchParams } from "react-router-dom";
-import { useGetGameFromNameDBQuery } from "../store/apis/gameApi";
+
 import styled from "styled-components";
-import { Game, SteamImageSizes, StoreTypes } from "../@types/global.d";
+import { Game, StoreTypes } from "../@types/global.d";
 import { device } from "../styles/media";
-import { useNavigate } from "react-router-dom";
-import StorePrice from "../components/storePrice/StorePrice";
-import { capitalizeEachWord } from "../utils";
+
+import CustomSelect from "../components/select/CustomSelect";
+import { useState } from "react";
+import { useGetGame } from "../hooks/useGetGame";
+// import CardGameContainer from "../components/cardGame/CardGameContainer";
+import GamesContainer from "../components/gamesContainer/GamesContainer";
+import Loading from "../components/Loading";
+// import { Game, StoreTypes } from "../@types/global.d.ts";
 
 const Results = () => {
   const [searchParams] = useSearchParams();
-  const searchTerm = searchParams.get("search") || "";
-  const navigate = useNavigate();
 
-  const handleNavigateToDetail = (id: number) => {
-    navigate(`/game/${id}`);
+  const searchTerm = searchParams.get("search") || "";
+  const [selectedValue, setSelectValue] = useState("price-asc");
+
+  const handleSelectedChange = (value: string) => {
+    setSelectValue(value);
   };
 
-  const { data, error, isLoading } = useGetGameFromNameDBQuery(searchTerm);
+  const sortOptions = [
+    { value: "price-asc", label: "Precio (Bajo - Alto)" },
+    { value: "price-desc", label: "Precio (Alto - Bajo)" },
+    { value: "alphabetical-asc", label: "Alfabético (A-Z)" },
+    { value: "alphabetical-desc", label: "Alfabético (Z-A)" },
+  ];
+
+  const { data, error, isLoading } = useGetGame(searchTerm);
 
   //todo: loading y error de busqueda
-  if (isLoading) return <div>Cargando games....</div>;
+  if (isLoading) return <Loading />;
   if (error) return <div>Ocurrió un error al cargar los datos</div>;
-
   // console.log(data);
   return (
-    <ResultContainer>
-      {data &&
-        data?.data.map((game) => {
-          return (
-            <CardGame
-              key={game.id}
-              $imageUrl={getImgGame(game, SteamImageSizes.HERO_CAPSULE)}
-              onClick={() => handleNavigateToDetail(game.id)}
-            >
-              <div>
-                <ImgGame
-                  src={getImgGame(game, SteamImageSizes.HERO_CAPSULE)}
-                  alt={`${game.gameName}-img`}
-                  onClick={() => handleNavigateToDetail(game.id)}
-                />
-              </div>
-
-              <InfoGame>
-                <TitleGame>{capitalizeEachWord(game.gameName)}</TitleGame>
-                <StoresContainer>
-                  <StorePrice store={game.stores[0]} shouldRedirect={false} />
-                </StoresContainer>
-              </InfoGame>
-            </CardGame>
-          );
-        })}
-    </ResultContainer>
+    <MainContainer>
+      {data && (
+        <>
+          <ResultHeader>
+            <h3>Resultados: {data.nbHts}</h3>
+            <CustomSelect
+              options={sortOptions}
+              value={selectedValue}
+              onChange={handleSelectedChange}
+              // placeholder="ordenar por"
+            />
+          </ResultHeader>
+          <GamesContainer
+            data={sortGames(data.data, selectedValue)}
+            // isSmallSize={true}
+          />
+        </>
+      )}
+      {/* <ResultHeader>
+        {data && <h3>Resultados: {data.nbHts}</h3>}
+        <CustomSelect
+          options={sortOptions}
+          value={selectedValue}
+          onChange={handleSelectedChange}
+          // placeholder="ordenar por"
+        />
+      </ResultHeader> */}
+      {/* {data && <GamesContainer data={sortGames(data.data, selectedValue)} />} */}
+      {/* <ResultContainer>
+        {data &&
+          sortGames(data.data, selectedValue).map((game) => {
+            return (
+              <CardGameContainer game={game} key={game.id}></CardGameContainer>
+            );
+          })}
+      </ResultContainer> */}
+    </MainContainer>
   );
 };
 
-interface CardGameProps {
-  $imageUrl: string;
-}
-
-const ResultContainer = styled.div`
+export const MainContainer = styled.section`
   margin: 0 auto;
   width: 100%;
   max-width: 1440px;
   padding: 50px 15px;
   display: flex;
-  flex-flow: column nowrap;
-  gap: 50px;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
 
+  align-items: center;
+  gap: 40px;
   @media ${device.tablet} {
-    padding: 100px 20px;
-    flex-flow: row wrap;
+    align-items: flex-start;
+
+    /* max-width: 80%; */
+    padding: 50px 20px;
   }
 
   @media ${device.laptop} {
-    padding: 100px 50px;
+    align-items: flex-start;
+
+    max-width: 80%;
+    padding: 75px 0px;
+  }
+
+  @media ${device.desktop} {
+    max-width: 1200px;
   }
 `;
 
-const CardGame = styled.div<CardGameProps>`
-  /* background-image: ${({ theme, $imageUrl }) =>
-    `radial-gradient(${theme.cardGameGradient}), url(${$imageUrl}) `};
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover; */
-  filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.2));
-  background-color: ${({ theme }) => theme.cardGame};
-
-  padding: 10px 10px;
-  max-width: 400px;
+const ResultHeader = styled.div`
   width: 100%;
-
-  height: 200px;
   display: flex;
-
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px,
-    rgba(0, 0, 0, 0.05) 0px 5px 10px;
-
-  @media ${device.tablet} {
-    padding: 0px;
-    flex-direction: column;
-    height: 250px;
-    max-width: 350px;
-    /* height: 330px; */
-    /* max-width: 230px; */
-  }
-  transition: filter 300ms ease, transform 300ms ease;
-  &:hover {
-    transform: translate(0, 1px);
-    filter: brightness(0.6);
-  }
 `;
 
-const ImgGame = styled.img`
-  width: 100px;
-  height: 130px;
-  object-fit: cover;
-  object-position: 50% 50%;
-  border-radius: 4px;
-  cursor: pointer;
-  opacity: 1;
-
-  @media ${device.tablet} {
-    width: 350px;
-    height: 180px;
-    object-fit: cover;
-    /* object-position: 50% top; */
-  }
-`;
-
-const InfoGame = styled.div`
-  overflow: hidden;
-  padding-left: 7px;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  gap: 10px;
-
-  @media ${device.tablet} {
-    padding: 5px 0 0 0;
-    justify-content: flex-start;
-  }
-`;
-
-const TitleGame = styled.h2`
-  /* text-align: center; */
-  cursor: pointer;
-  font-size: 14px;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  @media ${device.tablet} {
-    padding: 0 8px;
-    font-size: 15px;
-  }
-  @media ${device.laptop} {
-    font-size: 14px;
-  }
-`;
-
-const StoresContainer = styled.div`
-  display: flex;
-  gap: 10px;
-  flex-direction: column;
-  /* margin: auto 0; */
-`;
-
-export const getImgGame = (game: Game, size: SteamImageSizes) => {
-  // if (game.stores.length > 0 && "cover" in game.infoGame[0]) {
-  //   return `https://images.igdb.com/igdb/image/upload/t_${size}/${game.infoGame[0].cover.image_id}.jpg`;
-  // }
+export const getImgGame = (game: Game) => {
   const correctStore = game.stores.find((store) => store.game_id === game.id);
 
   if (!correctStore) {
@@ -185,26 +121,57 @@ export const getImgGame = (game: Game, size: SteamImageSizes) => {
   }
 
   const { store, info_game } = correctStore;
-  // if (ImgSizes.NONE === size) {
-  //   return info_game.imgStore;
-  // }
 
   const storeImage: Record<StoreTypes, string> = {
     [StoreTypes.STEAM_STORE]: "",
     [StoreTypes.EPIC_STORE]: "?h=352&amp;quality=medium&amp;resize=1&amp;w=264", //"?h=352&amp;quality=medium&amp;resize=1&amp;w=264", "?resize=1&w=460&h=215&quality=medium"
     [StoreTypes.XBOX_STORE]: "?q=100&h=352&w=265",
   };
-  //569 x 320
-  // console.log("-----------------------");
-  // console.log(game.gameName);
-  // console.log(info_game.imgStore);
-  // console.log("-----------------------");
-  // if (store === StoreTypes.STEAM_STORE) {
-  //   return info_game.imgStore.replace("header", size);
-  // }
-  console.log(size);
-  console.log(`${info_game.imgStore}${storeImage[store as StoreTypes]}`);
+
   return `${info_game.imgStore}${storeImage[store as StoreTypes]}`;
+};
+
+const sortGames = (data: Game[], sortKey: string) => {
+  const sortOption = sortKey.split("-");
+  // console.log(sortOption);
+  const sort = sortOption[0];
+  const order = sortOption[1] === "asc" ? 1 : -1;
+
+  let gamesSorted: Game[] = [];
+  if (sort === "alphabetical") {
+    gamesSorted = [...data].sort((a, b) => {
+      const gameA = a.gameName;
+      const gameB = b.gameName;
+
+      if (gameA > gameB) {
+        return 1 * order;
+      }
+      if (gameA < gameB) {
+        return -1 * order;
+      }
+      return 0;
+    });
+  }
+
+  if (sort === "price") {
+    gamesSorted = [...data].sort((a, b) => {
+      const finalPriceA = parseInt(a.stores[0].info_price.final_price);
+      const finalPriceB = parseInt(b.stores[0].info_price.final_price);
+
+      if (isNaN(finalPriceA)) return -1;
+      if (isNaN(finalPriceB)) return 1;
+
+      if (finalPriceA > finalPriceB) {
+        return 1 * order;
+      }
+      if (finalPriceA < finalPriceB) {
+        return -1 * order;
+      }
+      return 0;
+    });
+  }
+
+  return gamesSorted;
 };
 
 export default Results;

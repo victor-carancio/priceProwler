@@ -32,6 +32,10 @@ textarea:focus, input:focus{
 
  }
 
+ option{
+   font-family: 'Roboto', sans-serif;
+ }
+
  .logo{
    width: 30px;
    height: 30px;

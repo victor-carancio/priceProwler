@@ -8,7 +8,7 @@ import {
   GameDetails,
   // ImgSizes,
   Screenshot,
-  SteamImageSizes,
+
   // Video,
   // InvolvedCompany,
   // NameIdClass,
@@ -20,6 +20,8 @@ import GameImagesGallery from "../components/imageGallery/GameImagesGallery";
 import { Months } from "../utils";
 import { useRef, useState } from "react";
 import { StyledIcon } from "../components/logo";
+import { ViewMore } from "../components/viewMore/ViewMoreButton";
+import Loading from "../components/Loading";
 
 const GameDetail = () => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -38,7 +40,7 @@ const GameDetail = () => {
   const { data, error, isLoading } = useGetGameDetailQuery(id!);
 
   //todo: loading y error de busqueda
-  if (isLoading) return <div>Cargando games....</div>;
+  if (isLoading) return <Loading />;
   if (error || !data) return <div>Ocurrió un error al cargar los datos</div>;
 
   const game = { ...getStoreInfo(data) };
@@ -50,12 +52,9 @@ const GameDetail = () => {
     <ContainerGame $imageUrl={data.stores[0].info_game.screenshots[0].url}>
       <h2>{game.gameName}</h2>
 
-      <HeaderGame $imageUrl={getImgGame(data, SteamImageSizes.CAPSULE)}>
+      <HeaderGame $imageUrl={getImgGame(data)}>
         <MainInfo>
-          <CoverGame
-            src={getImgGame(data, SteamImageSizes.CAPSULE)}
-            alt={`${data.gameName}-img`}
-          />
+          <CoverGame src={getImgGame(data)} alt={`${data.gameName}-img`} />
           <GalleryTablet>
             <GameImagesGallery images={getImagesFromGame(game.screenshots)} />
           </GalleryTablet>
@@ -109,6 +108,7 @@ const GameDetail = () => {
                   })}
                 </p>
               </GameDescription>
+              {/* <ViewMoreButton isExpanded={isDescriptionExpanded } onClick={toggleExpand}/> */}
               <ViewMore onClick={toggleExpand}>
                 {isDescriptionExpanded ? "Ver menos" : "Ver más"}
               </ViewMore>
@@ -446,26 +446,26 @@ const GameDescription = styled.div<GameDescriptionProps>`
   transition: height 300ms ease;
 `;
 
-const ViewMore = styled.div`
-  box-sizing: content-box;
-  cursor: pointer;
-  align-self: flex-end;
-  text-align: center;
-  background-color: ${({ theme }) => theme.card};
-  padding: 3px 8px;
-  width: 100px;
-  font-size: 13px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.textBody};
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-  border: 0.5px solid transparent;
-  transition: border-color 300ms ease-in-out, background-color 300ms ease-in-out;
-  &:hover {
-    color: ${({ theme }) => theme.text};
-    border-color: ${({ theme }) => theme.textBody};
-    background-color: ${({ theme }) => theme.background};
-  }
-`;
+// const ViewMore = styled.div`
+//   box-sizing: content-box;
+//   cursor: pointer;
+//   align-self: flex-end;
+//   text-align: center;
+//   background-color: ${({ theme }) => theme.card};
+//   padding: 3px 8px;
+//   width: 100px;
+//   font-size: 13px;
+//   font-weight: 600;
+//   color: ${({ theme }) => theme.textBody};
+//   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+//   border: 0.5px solid transparent;
+//   transition: border-color 300ms ease-in-out, background-color 300ms ease-in-out;
+//   &:hover {
+//     color: ${({ theme }) => theme.text};
+//     border-color: ${({ theme }) => theme.textBody};
+//     background-color: ${({ theme }) => theme.background};
+//   }
+// `;
 
 const InfoOfGame = styled.div`
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;

@@ -22,7 +22,7 @@ const SearchInput = () => {
     event: React.FormEvent<HTMLFormElement> | React.MouseEvent<SVGElement>
   ) => {
     event.preventDefault();
-    console.log("jio");
+    // console.log("jio");
 
     if (formData.gameName !== "") {
       navigate(`/results?search=${encodeURIComponent(formData.gameName)}`);

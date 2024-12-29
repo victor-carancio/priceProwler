@@ -5,6 +5,7 @@ import { StyledStoreIcon } from "../logo";
 
 import { storeColors } from "../../styles/theme";
 import GamepassIcon from "./GamepassIcon";
+import GamePrice from "./GamePrice";
 
 interface StorePriceProps {
   store: StoreReduced;
@@ -14,7 +15,9 @@ interface StorePriceProps {
 
 const StorePrice = ({ store, shouldRedirect, detail }: StorePriceProps) => {
   const StoreComponent = shouldRedirect ? "a" : "div";
-
+  // console.log("--------------Price-----------------------");
+  // console.log(store);
+  // console.log("--------------------------------------");
   return (
     <StoreGame
       href={shouldRedirect ? store.url : undefined}
@@ -33,32 +36,8 @@ const StorePrice = ({ store, shouldRedirect, detail }: StorePriceProps) => {
           <GamepassIcon height={detail ? "40px" : "25px"} fill="#f2ecff" />
         )}
       </StoreInfo>
-      {store.info_price.discount_percent !== "0" &&
-      store.info_price.discount_percent !== "-" ? (
-        <DiscountPrice>
-          <Discount $storeName={store.store} $detail={true}>
-            <p>{`${store.info_price.discount_percent}%`}</p>
-          </Discount>
-          <Prices>
-            <InitialPrice
-              $storeName={store.store}
-              $detail={detail}
-            >{`${store.info_price.initial_price} ${store.info_price.currency}`}</InitialPrice>
-            <NormalPrice $storeName={store.store} $detail={detail}>
-              {`${store.info_price.final_price} ${store.info_price.currency}`}
-            </NormalPrice>
-          </Prices>
-        </DiscountPrice>
-      ) : (
-        <Prices>
-          <NormalPrice $storeName={store.store} $detail={detail}>
-            {store.info_price.final_price !== "Gratis" &&
-            store.info_price.final_price !== "Próximamente"
-              ? `${store.info_price.final_price} ${store.info_price.currency}`
-              : store.info_price.final_price}
-          </NormalPrice>
-        </Prices>
-      )}
+
+      <GamePrice store={store} detail={detail}></GamePrice>
     </StoreGame>
   );
 };
@@ -75,7 +54,7 @@ export const StoreGame = styled.a<StoreNameProps>`
   background-color: ${({ $storeName }) =>
     storeColors[$storeName as StoreTypes].cardBackground};
   width: 100%;
-  height: ${({ $detail }) => ($detail ? "50px" : "30px")};
+  height: ${({ $detail }) => ($detail ? "50px" : "35px")};
   padding-left: 10px;
   border-radius: 4px;
   display: flex;
@@ -106,87 +85,6 @@ const StoreInfo = styled.div`
   display: flex;
   align-items: center;
   gap: 7px;
-`;
-
-const NormalPrice = styled.p<StoreNameProps>`
-  font-size: ${({ $detail }) => ($detail ? "14px" : "11px")};
-  font-weight: bold;
-  color: ${({ $storeName }) =>
-    storeColors[$storeName as StoreTypes].normalpriceColor};
-
-  @media ${device.mobile} {
-    font-size: ${({ $detail }) => ($detail ? "15px" : "12px")};
-  }
-  @media ${device.tablet} {
-    font-size: ${({ $detail }) => ($detail ? "15px" : "14px")};
-  }
-`;
-
-const DiscountPrice = styled.div`
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
-
-const Discount = styled.div<StoreNameProps>`
-  height: 100%;
-  width: ${({ $detail }) => ($detail ? "50px" : "35px")};
-  padding: 0 5px;
-  background-color: ${({ $storeName }) =>
-    storeColors[$storeName as StoreTypes].offerBackground};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  p {
-    font-size: ${({ $detail }) => ($detail ? "18px" : "13px")};
-    font-weight: bold;
-    color: ${({ $storeName }) =>
-      storeColors[$storeName as StoreTypes].offerFontColor};
-  }
-
-  @media ${device.mobile} {
-    width: 50px;
-    p {
-      font-size: ${({ $detail }) => ($detail ? "18px" : "13px")};
-      font-weight: bold;
-    }
-  }
-
-  @media ${device.tablet} {
-    width: 40px;
-    p {
-      font-size: ${({ $detail }) => ($detail ? "18px" : "13px")};
-      font-weight: bold;
-    }
-  }
-`;
-
-const Prices = styled.div`
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  height: 100%;
-  padding: 0 7px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
-`;
-
-const InitialPrice = styled.p<StoreNameProps>`
-  font-size: ${({ $detail }) => ($detail ? "11px" : "10px")};
-  font-weight: bold;
-  text-decoration: line-through;
-  color: ${({ $storeName }) =>
-    storeColors[$storeName as StoreTypes].initialPriceColor};
-
-  @media ${device.mobile} {
-    font-size: ${({ $detail }) => ($detail ? "12px" : "11px")};
-  }
-
-  @media ${device.tablet} {
-    font-size: ${({ $detail }) => ($detail ? "12px" : "11px")};
-  }
 `;
 
 export default StorePrice;
