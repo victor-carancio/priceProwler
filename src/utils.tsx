@@ -18,3 +18,10 @@ export const Months: { [key: string]: string } = {
   "10": "noviembre",
   "11": "diciembre",
 };
+
+export const sortOptions = [
+  { value: "price-asc", label: "Precio (Bajo - Alto)" },
+  { value: "price-desc", label: "Precio (Alto - Bajo)" },
+  { value: "alphabetical-asc", label: "Alfabético (A-Z)" },
+  { value: "alphabetical-desc", label: "Alfabético (Z-A)" },
+];

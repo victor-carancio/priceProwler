@@ -10,6 +10,11 @@ import { useGetGame } from "../hooks/useGetGame";
 // import CardGameContainer from "../components/cardGame/CardGameContainer";
 import GamesContainer from "../components/gamesContainer/GamesContainer";
 import Loading from "../components/Loading";
+import { Helmet } from "react-helmet-async";
+import ResultNotFound from "../components/ResultNotFound";
+import SearchError from "../components/SearchError";
+import { sortOptions } from "../utils";
+
 // import { Game, StoreTypes } from "../@types/global.d.ts";
 
 const Results = () => {
@@ -18,61 +23,46 @@ const Results = () => {
   const searchTerm = searchParams.get("search") || "";
   const [selectedValue, setSelectValue] = useState("price-asc");
 
-  const handleSelectedChange = (value: string) => {
-    setSelectValue(value);
+  const handleSelectedChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectValue(e.target.value);
   };
-
-  const sortOptions = [
-    { value: "price-asc", label: "Precio (Bajo - Alto)" },
-    { value: "price-desc", label: "Precio (Alto - Bajo)" },
-    { value: "alphabetical-asc", label: "Alfabético (A-Z)" },
-    { value: "alphabetical-desc", label: "Alfabético (Z-A)" },
-  ];
 
   const { data, error, isLoading } = useGetGame(searchTerm);
 
-  //todo: loading y error de busqueda
   if (isLoading) return <Loading />;
-  if (error) return <div>Ocurrió un error al cargar los datos</div>;
-  // console.log(data);
+  if (error) return <SearchError />;
+  if (data?.nbHts === 0 || !data?.data.length) return <ResultNotFound />;
+
   return (
-    <MainContainer>
-      {data && (
-        <>
-          <ResultHeader>
-            <h3>Resultados: {data.nbHts}</h3>
-            <CustomSelect
-              options={sortOptions}
-              value={selectedValue}
-              onChange={handleSelectedChange}
-              // placeholder="ordenar por"
-            />
-          </ResultHeader>
-          <GamesContainer
-            data={sortGames(data.data, selectedValue)}
-            // isSmallSize={true}
-          />
-        </>
-      )}
-      {/* <ResultHeader>
-        {data && <h3>Resultados: {data.nbHts}</h3>}
-        <CustomSelect
-          options={sortOptions}
-          value={selectedValue}
-          onChange={handleSelectedChange}
-          // placeholder="ordenar por"
+    <>
+      <Helmet>
+        <title>{searchTerm} | Búsqueda | Price Prowler</title>
+        <meta
+          name="description"
+          content="Busca videojuegos por nombre, compara precios actualizados para aprovechar los decuentos de tus tiendas favoritas."
         />
-      </ResultHeader> */}
-      {/* {data && <GamesContainer data={sortGames(data.data, selectedValue)} />} */}
-      {/* <ResultContainer>
-        {data &&
-          sortGames(data.data, selectedValue).map((game) => {
-            return (
-              <CardGameContainer game={game} key={game.id}></CardGameContainer>
-            );
-          })}
-      </ResultContainer> */}
-    </MainContainer>
+      </Helmet>
+      <MainContainer>
+        {data && (
+          <>
+            <ResultHeader>
+              <h3>Resultados: {data.nbHts}</h3>
+              <CustomSelect
+                options={sortOptions}
+                value={selectedValue}
+                onChange={handleSelectedChange}
+                autosize={true}
+                // placeholder="ordenar por"
+              />
+            </ResultHeader>
+            <GamesContainer
+              data={sortGames(data.data, selectedValue)}
+              // isSmallSize={true}
+            />
+          </>
+        )}
+      </MainContainer>
+    </>
   );
 };
 
@@ -83,6 +73,7 @@ export const MainContainer = styled.section`
   padding: 50px 15px;
   display: flex;
   flex-direction: column;
+  min-height: calc(90vh - 150px);
 
   align-items: center;
   gap: 40px;

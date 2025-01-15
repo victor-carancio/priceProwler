@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { IoIosMenu, IoIosSearch, IoIosSunny, IoIosMoon } from "react-icons/io";
+import { IoIosSearch, IoIosSunny, IoIosMoon } from "react-icons/io";
 
-import { IoMdPerson } from "react-icons/io";
+// import { IoMdPerson } from "react-icons/io";
 import { StyledIcon } from "../logo";
 import { useAppSelector } from "../../store/hooks/useAppSelector";
 import { useAppDispatch } from "../../store/hooks/useAppDispatch";
@@ -9,23 +9,40 @@ import { toggleTheme } from "../../store/slices/uiSlice";
 import { device } from "../../styles/media";
 import { useState } from "react";
 import SearchInput from "./SearchInput";
+import { ThemeEnum } from "../../@types/global.d";
+import { useNavigate } from "react-router-dom";
+import AdvanceSearch from "./AdvanceSearch";
 
 const Header = () => {
   const dispatch = useAppDispatch();
   const [openSearch, setOpenSearch] = useState(false);
-  const theme = useAppSelector((state) => state.ui.theme);
 
+  const [isAdvanceSearch, setIsAdvanceSearch] = useState(false);
+  const theme = useAppSelector((state) => state.ui.theme);
+  const navigate = useNavigate();
+
+  const handleNavigateToHome = () => {
+    navigate(`/`);
+  };
   const searchInputToggle = () =>
     setOpenSearch(() => (openSearch ? false : true));
 
+  const advanceSearchToggle = () =>
+    setIsAdvanceSearch(() => (isAdvanceSearch ? false : true));
+
   return (
     <>
-      <HeaderContainer>
-        <StyledIcon>
+      <HeaderContainer $isAdvanceSearch={isAdvanceSearch}>
+        <LogoImg
+          src="/src/assets/pp-logo.png"
+          alt="pp-logo.png"
+          onClick={handleNavigateToHome}
+        />
+        {/* <StyledIcon>
           <IoIosMenu />
-        </StyledIcon>
+        </StyledIcon> */}
         <div className="hide-on-mobile">
-          <SearchInput />
+          <SearchInput onClick={advanceSearchToggle} />
         </div>
         <Nav>
           <div className="hide-on-desktop">
@@ -36,29 +53,40 @@ const Header = () => {
 
           <ThemeSwitch onClick={() => dispatch(toggleTheme())}>
             <StyledIcon>
-              {theme === "light" ? <IoIosSunny /> : <IoIosMoon />}
+              {theme === ThemeEnum.LIGHT ? <IoIosMoon /> : <IoIosSunny />}
             </StyledIcon>
           </ThemeSwitch>
-          <Auth>
+          {/* <Auth>
             <StyledIcon>
               <IoMdPerson />
             </StyledIcon>
-          </Auth>
+          </Auth> */}
         </Nav>
       </HeaderContainer>
       <SearchOverlay $isOpen={openSearch}>
-        <SearchInput />
+        <SearchInput onClick={advanceSearchToggle} />
       </SearchOverlay>
+      <AdvanceSearch
+        advanceSearchToggle={advanceSearchToggle}
+        isAdvanceSearch={isAdvanceSearch}
+        openSearch={openSearch}
+      />
     </>
   );
 };
 
 export default Header;
 
-const HeaderContainer = styled.header`
+interface HeaderProps {
+  $isAdvanceSearch: boolean;
+}
+
+const HeaderContainer = styled.header<HeaderProps>`
   width: 100%;
   padding: 0 25px;
   height: 60px;
+  position: sticky;
+  top: 0;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
@@ -82,12 +110,22 @@ export const SearchOverlay = styled.div<SearchOverlayProps>`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
+  position: fixed;
+
   z-index: 99;
   overflow: hidden;
   transition: height 100ms ease-in-out;
   @media ${device.laptop} {
     display: none;
+  }
+`;
+
+const LogoImg = styled.img`
+  height: 40px;
+  cursor: pointer;
+  transition: filter ease-in-out 100ms;
+  &:hover {
+    filter: brightness(0.6);
   }
 `;
 
@@ -104,4 +142,4 @@ const Nav = styled.nav`
 
 const ThemeSwitch = styled.div``;
 
-const Auth = styled.div``;
+// const Auth = styled.div``;

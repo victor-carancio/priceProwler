@@ -10,10 +10,11 @@ export const lightTheme: DefaultTheme = {
   textBody: "#383838",
   textHover: "#050505",
   header: "#eeeeee",
+
   background: "#eeeeee",
   card: "#faf8ff",
-  button: "#5f7f7e",
-  buttonHover: "#43655a",
+  button: "#2a475e",
+  buttonHover: "#1a2c3b",
   logo: "#3e3c4b",
   logoHover: "#171623",
 
@@ -22,6 +23,14 @@ export const lightTheme: DefaultTheme = {
   cardGameGradient: "rgba(238, 238, 238,0.85) 1%,rgba(238, 238, 238,1) 100%",
   bodyBackgroundGradient:
     "rgba(250, 248, 255,0.80) 10%, rgba(250, 248, 255,1) 80%",
+
+  footerText: "#f2ecff",
+  footerBackground: "#1a2c3b", //"#2a475e", // #1a2c3b
+  headerOverlay: "rgb(223, 223, 223)",
+  headerOverlayBackground: "rgba(30, 30, 30, 0.8)", //"rgba(238, 238, 238, 0.8)",
+  customButtonTextColor: "#f2ecff",
+  selectBackground: "#eeeeee",
+  selectBorder: "#e6e6e6",
 };
 
 export const darkTheme: DefaultTheme = {
@@ -30,10 +39,11 @@ export const darkTheme: DefaultTheme = {
   textBody: "#d1cfcb",
   textHover: "#b4aebf",
   header: "#1e1e1e",
+
   background: "#1e1e1e",
   card: "#424449",
-  button: "#00c896",
-  buttonHover: "#c8fcea",
+  button: "#2a475e",
+  buttonHover: "#1a2c3b",
   logo: "#f2ecff",
   logoHover: "#b4aebf",
 
@@ -42,6 +52,14 @@ export const darkTheme: DefaultTheme = {
   cardGameGradient: "circle,rgba(66, 68, 73,0.95) 1%,rgba(66, 68, 73,1) 100%",
   bodyBackgroundGradient:
     "circle,rgba(40, 40, 40,0.9) 10%, rgba(40, 40, 40,1) 80%",
+  footerText: "#f2ecff",
+  footerBackground: "#0f0f0f", // #0a0909
+  headerOverlay: "rgb(36, 36, 36)",
+  headerOverlayBackground: "rgba(10, 9, 9, 0.75)", //"rgba(30, 30, 30, 0.8)",
+  customButtonTextColor: "#f2ecff",
+
+  selectBackground: "#2e2f33",
+  selectBorder: "#232427",
 };
 
 // "rgba(40, 40, 40,0.9) 0%, rgba(40, 40, 40,1) 75%"

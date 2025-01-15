@@ -5,10 +5,7 @@ const Loading = () => {
   return (
     <LoadingContainer>
       <h2>Esto puede tomar unos momentos...</h2>
-      <ImgLoading
-        src="/src/assets/Bean Eater@1x-1.0s-200px-200px (1).gif"
-        alt="loading-alt"
-      />
+      <ImgLoading src="/src/assets/Bean-Eater-loader.gif" alt="loading-alt" />
     </LoadingContainer>
   );
 };
@@ -18,7 +15,7 @@ export default Loading;
 const LoadingContainer = styled.div`
   margin: 0 auto;
   max-width: 1440px;
-  height: 90vh;
+  height: calc(90vh + 60px);
   display: flex;
   flex-direction: column;
   justify-content: center;

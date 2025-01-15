@@ -20,6 +20,10 @@ textarea:focus, input:focus{
    
  }
 
+ .disable-transition{
+   transition: none;
+ }
+
  a{
     color: inherit;
     text-decoration: none;

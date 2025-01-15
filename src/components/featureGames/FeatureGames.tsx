@@ -29,16 +29,24 @@ const FeatureGames = ({ feature, games }: FeatureGamesProps) => {
   return games.length ? (
     <FeatureContainer>
       <TitleFeature>{feature}</TitleFeature>
-      <FeatureGamesType
-        $isOpen={isOpen}
-        $maxHeight={maxHeight}
-        ref={contentRef}
-      >
-        <GamesContainer data={games} isSmallSize={true} />
-      </FeatureGamesType>
-      <ViewMore onClick={toggleExpand}>
-        {isOpen ? "Ver Menos" : "Ver Más"}
-      </ViewMore>
+      {games.length >= 12 ? (
+        <>
+          <FeatureGamesType
+            $isOpen={isOpen}
+            $maxHeight={maxHeight}
+            ref={contentRef}
+          >
+            <GamesContainer data={games} isSmallSize={true} />
+          </FeatureGamesType>
+          <ViewMore onClick={toggleExpand}>
+            {isOpen ? "Ver Menos" : "Ver Más"}
+          </ViewMore>
+        </>
+      ) : (
+        <div>
+          <GamesContainer data={games} isSmallSize={true} />
+        </div>
+      )}
     </FeatureContainer>
   ) : (
     <></>
@@ -47,8 +55,8 @@ const FeatureGames = ({ feature, games }: FeatureGamesProps) => {
 
 export default FeatureGames;
 interface FeatureContainerProps {
-  $isOpen: boolean;
-  $maxHeight: number;
+  $isOpen?: boolean;
+  $maxHeight?: number;
 }
 
 const FeatureContainer = styled.div`
@@ -56,6 +64,7 @@ const FeatureContainer = styled.div`
 
   display: flex;
   flex-direction: column;
+  gap: 20px;
 `;
 
 const TitleFeature = styled.h2`

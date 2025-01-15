@@ -1,11 +1,19 @@
 import styled from "styled-components";
 import { StyledIcon } from "../logo";
 import { IoIosSearch } from "react-icons/io";
+import { IoFilterSharp } from "react-icons/io5";
+
+// import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
+
 import { device } from "../../styles/media";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const SearchInput = () => {
+interface SearchInputProps {
+  onClick: () => void;
+}
+
+const SearchInput = ({ onClick }: SearchInputProps) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     gameName: "",
@@ -26,12 +34,13 @@ const SearchInput = () => {
 
     if (formData.gameName !== "") {
       navigate(`/results?search=${encodeURIComponent(formData.gameName)}`);
+      setFormData({ ...formData, gameName: "" });
     }
   };
 
   return (
     <InputContainer onSubmit={handleSubmit}>
-      <input
+      <Input
         type="text"
         name="gameName"
         value={formData.gameName}
@@ -40,9 +49,14 @@ const SearchInput = () => {
         placeholder="Buscar videojuego..."
         autoComplete="off"
       />
-      <StyledIcon className="input-logo">
-        <IoIosSearch onClick={handleSubmit} />
-      </StyledIcon>
+      <InputLogoContainer>
+        <StyledIcon>
+          <IoFilterSharp onClick={onClick} />
+        </StyledIcon>
+        <StyledIcon className="input-logo">
+          <IoIosSearch onClick={handleSubmit} />
+        </StyledIcon>
+      </InputLogoContainer>
     </InputContainer>
   );
 };
@@ -61,22 +75,30 @@ const InputContainer = styled.form`
     height: 50px;
     width: 800px;
   }
+`;
 
-  .search-input {
-    padding: 0 40px 0px 20px;
-    height: 70%;
-    width: 100%;
-    font-weight: bold;
-    font-size: 13px;
-    background-color: ${({ theme }) => theme.card};
-    border: none;
-    border-radius: 5px;
-    color: ${({ theme }) => theme.text};
-  }
-
-  .input-logo {
+const Input = styled.input`
+  padding: 0 40px 0px 20px;
+  height: 70%;
+  width: 100%;
+  font-weight: bold;
+  font-size: 13px;
+  background-color: ${({ theme }) => theme.card};
+  border: none;
+  border-radius: 5px;
+  color: ${({ theme }) => theme.text};
+  /* .input-logo {
     position: absolute;
     right: 10px;
     transform: scale(0.8);
-  }
+  } */
+`;
+
+const InputLogoContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  position: absolute;
+  right: 10px;
+  transform: scale(0.8);
 `;

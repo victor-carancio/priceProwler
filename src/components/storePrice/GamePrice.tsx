@@ -8,8 +8,6 @@ interface PriceProps {
   detail?: boolean;
 }
 const GamePrice = ({ store, detail }: PriceProps) => {
-  console.log(store);
-
   const { final_price, currency, discount_percent, initial_price } =
     store.info_price;
 

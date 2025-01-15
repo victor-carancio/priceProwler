@@ -7,6 +7,8 @@ declare module "styled-components" {
     textHover: string;
     textBody: string;
     header: string;
+    headerOverlay: string;
+    headerOverlayBackground: string;
     background: string;
     card: string;
     button: string;
@@ -14,8 +16,13 @@ declare module "styled-components" {
     logo: string;
     logoHover: string;
     cardGame: string;
+    customButtonTextColor: string;
     cardGameOpaque: string;
     cardGameGradient: string;
     bodyBackgroundGradient: string;
+    footerText: string;
+    footerBackground;
+    selectBackground: string;
+    selectBorder: string;
   }
 }

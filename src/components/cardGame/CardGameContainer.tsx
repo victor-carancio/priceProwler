@@ -28,7 +28,7 @@ const CardGameContainer = ({ game, isSmallSize }: CardGameContainerProps) => {
         <ImgGame
           src={getImgGame(game)}
           alt={`${game.gameName}-img`}
-          onClick={() => handleNavigateToDetail(game.id)}
+          // onClick={() => handleNavigateToDetail(game.id)}
           $isSmallSize={isSmallSize}
         />
       </ImgContainer>

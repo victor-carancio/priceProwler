@@ -1,13 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { ThemeEnum } from "../../@types/global.d";
 
 interface UiState {
   isSidebarOpen: boolean;
-  theme: "light" | "dark";
+  theme: ThemeEnum.DARK | ThemeEnum.LIGHT;
 }
 
+const initialTheme =
+  (localStorage.getItem("theme") as ThemeEnum) || ThemeEnum.LIGHT;
 const initialState: UiState = {
   isSidebarOpen: false,
-  theme: "light",
+  theme: initialTheme,
 };
 
 export const uiSlice = createSlice({
@@ -18,8 +21,14 @@ export const uiSlice = createSlice({
       state.isSidebarOpen = !state.isSidebarOpen;
     },
     toggleTheme: (state) => {
-      state.theme = state.theme === "light" ? "dark" : "light";
+      state.theme =
+        state.theme === ThemeEnum.LIGHT ? ThemeEnum.DARK : ThemeEnum.LIGHT;
+      localStorage.setItem("theme", state.theme);
     },
+    // clearTheme:()=>{
+    //   localStorage.removeItem("theme")
+    //   return {...initialState}
+    // }
   },
 });
 

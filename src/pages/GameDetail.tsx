@@ -22,6 +22,8 @@ import { useRef, useState } from "react";
 import { StyledIcon } from "../components/logo";
 import { ViewMore } from "../components/viewMore/ViewMoreButton";
 import Loading from "../components/Loading";
+import { Helmet } from "react-helmet-async";
+import SearchError from "../components/SearchError";
 
 const GameDetail = () => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -39,219 +41,229 @@ const GameDetail = () => {
 
   const { data, error, isLoading } = useGetGameDetailQuery(id!);
 
-  //todo: loading y error de busqueda
   if (isLoading) return <Loading />;
-  if (error || !data) return <div>Ocurrió un error al cargar los datos</div>;
+  if (error || !data) return <SearchError />;
 
   const game = { ...getStoreInfo(data) };
-  // const jio = "Blood and Gore\r\nIntense Violence\r\nStrong Language";
-  //data.stores[0].info_game.screenshots[0].url
-  // getImgGame(data, SteamImageSizes.CAPSULE)
-  console.log(data);
+
   return (
-    <ContainerGame $imageUrl={data.stores[0].info_game.screenshots[0].url}>
-      <h2>{game.gameName}</h2>
+    <>
+      <Helmet>
+        <title>{game.gameName} | Detalle | Price Prowler</title>
+        <meta
+          name="description"
+          content={`Consulta y compara los precios actuales para ${game.gameName}.`}
+        />
+      </Helmet>
+      <ContainerGame $imageUrl={data.stores[0].info_game.screenshots[0].url}>
+        <h2>{game.gameName}</h2>
 
-      <HeaderGame $imageUrl={getImgGame(data)}>
-        <MainInfo>
-          <CoverGame src={getImgGame(data)} alt={`${data.gameName}-img`} />
-          <GalleryTablet>
-            <GameImagesGallery images={getImagesFromGame(game.screenshots)} />
-          </GalleryTablet>
-        </MainInfo>
-        <PricesDetail>
-          <h3>Tiendas disponibles:</h3>
-          {data.stores.map((store) => {
-            return (
-              <StoreContainer key={store.id}>
-                <StorePrice store={store} shouldRedirect={true} detail={true} />
-              </StoreContainer>
-            );
-          })}
-        </PricesDetail>
-      </HeaderGame>
-      <GalleryMobile className="">
-        <GameImagesGallery images={getImagesFromGame(game.screenshots)} />
-      </GalleryMobile>
-      <></>
+        <HeaderGame $imageUrl={getImgGame(data)}>
+          <MainInfo>
+            <CoverGame src={getImgGame(data)} alt={`${data.gameName}-img`} />
+            <GalleryTablet>
+              <GameImagesGallery images={getImagesFromGame(game.screenshots)} />
+            </GalleryTablet>
+          </MainInfo>
+          <PricesDetail>
+            <h3>Tiendas disponibles:</h3>
+            {data.stores.map((store) => {
+              return (
+                <StoreContainer key={store.id}>
+                  <StorePrice
+                    store={store}
+                    shouldRedirect={true}
+                    detail={true}
+                  />
+                </StoreContainer>
+              );
+            })}
+          </PricesDetail>
+        </HeaderGame>
+        <GalleryMobile className="">
+          <GameImagesGallery images={getImagesFromGame(game.screenshots)} />
+        </GalleryMobile>
+        <></>
 
-      <AboutGame>
-        <Overview>
-          <div>
-            <h3>ACERCA DE ESTE JUEGO</h3>
-            <hr />
-          </div>
+        <AboutGame>
+          <Overview>
+            <div>
+              <h3>ACERCA DE ESTE JUEGO</h3>
+              <hr />
+            </div>
 
-          <p>{game.about}</p>
-          {game.description && (
-            <>
-              <GameDescription
-                $isExpanded={isDescriptionExpanded}
-                $maxHeight={maxHeight}
-                ref={contentRef}
-              >
-                <h4>Descripción</h4>
-                <hr />
-                <br />
-                <p>
-                  {game.description.split("\n").map((line, index) => {
-                    return (
-                      <>
-                        {line}
-                        {index !== game.description.split("\n").length - 1 && (
-                          <>
-                            <br />
-                          </>
-                        )}
-                      </>
-                    );
-                  })}
-                </p>
-              </GameDescription>
-              {/* <ViewMoreButton isExpanded={isDescriptionExpanded } onClick={toggleExpand}/> */}
-              <ViewMore onClick={toggleExpand}>
-                {isDescriptionExpanded ? "Ver menos" : "Ver más"}
-              </ViewMore>
-            </>
-          )}
-
-          {game.pc_requirements?.minimum &&
-            game.pc_requirements.recommended && (
-              <div>
-                <h4>Requisitos del sistema</h4>
-                <hr />
-                <br />
-                <p>
-                  {" "}
-                  {game.pc_requirements.minimum
-                    .split("\n")
-                    .map((line, index) => {
+            <p>{game.about}</p>
+            {game.description && (
+              <>
+                <GameDescription
+                  $isExpanded={isDescriptionExpanded}
+                  $maxHeight={maxHeight}
+                  ref={contentRef}
+                >
+                  <h4>Descripción</h4>
+                  <hr />
+                  <br />
+                  <p>
+                    {game.description.split("\n").map((line, index) => {
                       return (
-                        <>
-                          {index === 0 ? (
-                            <strong>{line.toUpperCase()}</strong>
-                          ) : (
-                            <>{` • ${line}`}</>
-                          )}
+                        <span key={index}>
+                          {line}
                           {index !==
-                            game.pc_requirements!.minimum.split("\n").length -
-                              1 && (
+                            game.description.split("\n").length - 1 && (
                             <>
-                              <br />
                               <br />
                             </>
                           )}
-                        </>
+                        </span>
                       );
                     })}
-                </p>
-
-                <br />
-                <p>
-                  {" "}
-                  {game.pc_requirements.recommended
-                    .split("\n")
-                    .map((line, index) => {
-                      return (
-                        <>
-                          {index === 0 ? (
-                            <strong>{line.toUpperCase()}</strong>
-                          ) : (
-                            <>{` • ${line}`}</>
-                          )}
-                          {index !==
-                            game.pc_requirements!.recommended.split("\n")
-                              .length -
-                              1 && (
-                            <>
-                              <br />
-                              <br />
-                            </>
-                          )}
-                        </>
-                      );
-                    })}
-                </p>
-              </div>
+                  </p>
+                </GameDescription>
+                {/* <ViewMoreButton isExpanded={isDescriptionExpanded } onClick={toggleExpand}/> */}
+                <ViewMore onClick={toggleExpand}>
+                  {isDescriptionExpanded ? "Ver menos" : "Ver más"}
+                </ViewMore>
+              </>
             )}
-        </Overview>
-        <InfoOfGame>
-          <div>
-            <h4>Información del juego</h4>
-            <hr />
-          </div>
 
-          {game.ratings && (
-            <InfoContainer>
-              <p>{game.ratings.name}</p>
-              <span>
-                {" "}
-                <strong>{`${game.ratings.rating.toUpperCase()}
+            {game.pc_requirements?.minimum &&
+              game.pc_requirements.recommended && (
+                <div>
+                  <h4>Requisitos del sistema</h4>
+                  <hr />
+                  <br />
+                  <p>
+                    {" "}
+                    {game.pc_requirements.minimum
+                      .split("\n")
+                      .map((line, index) => {
+                        return (
+                          <span key={index}>
+                            {index === 0 ? (
+                              <strong>{line.toUpperCase()}</strong>
+                            ) : (
+                              <>{` • ${line}`}</>
+                            )}
+                            {index !==
+                              game.pc_requirements!.minimum.split("\n").length -
+                                1 && (
+                              <>
+                                <br />
+                                <br />
+                              </>
+                            )}
+                          </span>
+                        );
+                      })}
+                  </p>
+
+                  <br />
+                  <p>
+                    {" "}
+                    {game.pc_requirements.recommended
+                      .split("\n")
+                      .map((line, index) => {
+                        return (
+                          <span key={index}>
+                            {index === 0 ? (
+                              <strong>{line.toUpperCase()}</strong>
+                            ) : (
+                              <>{` • ${line}`}</>
+                            )}
+                            {index !==
+                              game.pc_requirements!.recommended.split("\n")
+                                .length -
+                                1 && (
+                              <>
+                                <br />
+                                <br />
+                              </>
+                            )}
+                          </span>
+                        );
+                      })}
+                  </p>
+                </div>
+              )}
+          </Overview>
+          <InfoOfGame>
+            <div>
+              <h4>Información del juego</h4>
+              <hr />
+            </div>
+
+            {game.ratings && (
+              <InfoContainer>
+                <p>{game.ratings.name}</p>
+                <span>
+                  {" "}
+                  <strong>{`${game.ratings.rating.toUpperCase()}
               `}</strong>{" "}
-                - {game.ratings.descriptors}
-              </span>
-            </InfoContainer>
-          )}
+                  - {game.ratings.descriptors}
+                </span>
+              </InfoContainer>
+            )}
 
-          {game.developer && (
-            <InfoContainer>
-              <p>Desarrollador</p>
-              <span>{game.developer}</span>
-            </InfoContainer>
-          )}
+            {game.developer && (
+              <InfoContainer>
+                <p>Desarrollador</p>
+                <span>{game.developer}</span>
+              </InfoContainer>
+            )}
 
-          {game.publisher && (
-            <InfoContainer>
-              <div>
-                <p>Editor</p>
-              </div>
-              <span>{game.publisher}</span>
-            </InfoContainer>
-          )}
+            {game.publisher && (
+              <InfoContainer>
+                <div>
+                  <p>Editor</p>
+                </div>
+                <span>{game.publisher}</span>
+              </InfoContainer>
+            )}
 
-          {game.genres && (
-            <InfoContainer>
-              <p>Género</p>
-              <span>{getInfoOfGameNames(game.genres)}</span>
-            </InfoContainer>
-          )}
+            {game.genres && (
+              <InfoContainer>
+                <p>Género</p>
+                <span>{getInfoOfGameNames(game.genres)}</span>
+              </InfoContainer>
+            )}
 
-          {game.release_date && (
-            <InfoContainer>
-              <p>Lanzamiento</p>
-              <span>{getCorrectDate(game.store, game.release_date)}</span>
-            </InfoContainer>
-          )}
+            {game.release_date && (
+              <InfoContainer>
+                <p>Lanzamiento</p>
+                <span>{getCorrectDate(game.store, game.release_date)}</span>
+              </InfoContainer>
+            )}
 
-          {game.supportedLanguages !== "-" && (
-            <InfoContainer>
-              <p>Lenguajes</p>
-              <span>{game.supportedLanguages}</span>
-            </InfoContainer>
-          )}
+            {game.supportedLanguages !== "-" && (
+              <InfoContainer>
+                <p>Lenguajes</p>
+                <span>{game.supportedLanguages}</span>
+              </InfoContainer>
+            )}
 
-          {game.categories && (
-            <InfoContainer>
-              <div>
-                <p>Categorías</p>
-              </div>
-              <span>{getInfoOfGameNames(game.categories)}</span>
-            </InfoContainer>
-          )}
+            {game.categories && (
+              <InfoContainer>
+                <div>
+                  <p>Categorías</p>
+                </div>
+                <span>{getInfoOfGameNames(game.categories)}</span>
+              </InfoContainer>
+            )}
 
-          {game.website !== "-" && (
-            <WebSiteContainer>
-              <a href={game.website} target="_blank">
-                Sitio web
-              </a>
-              <StyledIcon>
-                <FaLink size="14px" />
-              </StyledIcon>
-            </WebSiteContainer>
-          )}
-        </InfoOfGame>
-      </AboutGame>
-    </ContainerGame>
+            {game.website !== "-" && (
+              <WebSiteContainer>
+                <a href={game.website} target="_blank">
+                  Sitio web
+                </a>
+                <StyledIcon>
+                  <FaLink size="14px" />
+                </StyledIcon>
+              </WebSiteContainer>
+            )}
+          </InfoOfGame>
+        </AboutGame>
+      </ContainerGame>
+    </>
   );
 };
 

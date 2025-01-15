@@ -1,3 +1,7 @@
+export enum ThemeEnum {
+  LIGHT = "light",
+  DARK = "dark",
+}
 export interface FeaturedGames {
   feature: string;
   games: Game[];
@@ -5,6 +9,24 @@ export interface FeaturedGames {
 export interface GameData {
   nbHts: number;
   data: Game[];
+}
+
+interface BaseFilters {
+  nbHts: number;
+}
+export interface GenresFilter extends BaseFilters {
+  genres: string[];
+}
+export interface CategoriesFilter extends BaseFilters {
+  categories: string[];
+}
+
+export interface FiltersData {
+  nbHts: number;
+  currentPage: number;
+  totalGames: 121;
+  totalPages: 13;
+  games: Game[];
 }
 
 export interface Game {
