@@ -8,7 +8,7 @@ import { useAppSelector } from "./store/hooks/useAppSelector";
 import { darkTheme, lightTheme } from "./styles/theme";
 import Header from "./components/header/Header";
 import { useEffect } from "react";
-import Footer from "./components/footer";
+import Footer from "./components/Footer";
 // import { useGetGameFromNameDBQuery } from "./store/apis/gameApi";
 
 function App() {
