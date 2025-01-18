@@ -5,7 +5,7 @@ const Loading = () => {
   return (
     <LoadingContainer>
       <h2>Esto puede tomar unos momentos...</h2>
-      <ImgLoading src="/src/assets/Bean-Eater-loader.gif" alt="loading-alt" />
+      <ImgLoading src="/assets/Bean-Eater-loader.gif" alt="loading-alt" />
     </LoadingContainer>
   );
 };

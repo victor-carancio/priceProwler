@@ -34,7 +34,7 @@ const Header = () => {
     <>
       <HeaderContainer $isAdvanceSearch={isAdvanceSearch}>
         <LogoImg
-          src="/src/assets/pp-logo.png"
+          src="/assets/pp-logo.png"
           alt="pp-logo.png"
           onClick={handleNavigateToHome}
         />
