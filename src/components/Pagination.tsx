@@ -19,7 +19,7 @@ const Pagination = ({
   prevPage,
   clickPage,
 }: PaginationProps) => {
-  console.log(totalPages);
+  // console.log(totalPages);
 
   const prevThreeNum = Array.from(
     { length: 3 },

@@ -80,7 +80,7 @@ const AdvanceResults = () => {
   // console.log(data.currentPage);
   // console.log(data.totalPages);
   // console.log(numbers);
-  console.log(data.games);
+  // console.log(data.games);
 
   return (
     <>

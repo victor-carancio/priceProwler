@@ -82,7 +82,7 @@ const DiscountPrice = styled.div`
 
 const Discount = styled.div<StoreNameProps>`
   height: 100%;
-  width: ${({ $detail }) => ($detail ? "50px" : "35px")};
+  width: ${({ $detail }) => ($detail ? "55px" : "35px")};
   padding: 0 5px;
   background-color: ${({ $storeName }) =>
     storeColors[$storeName as StoreTypes].offerBackground};
@@ -105,7 +105,7 @@ const Discount = styled.div<StoreNameProps>`
   }
 
   @media ${device.tablet} {
-    width: 40px;
+    width: 50px;
     p {
       font-size: ${({ $detail }) => ($detail ? "18px" : "13px")};
       font-weight: bold;
